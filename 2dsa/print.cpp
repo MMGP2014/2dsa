@@ -7,8 +7,7 @@ int click_moji(char *moji){
 	int x,y;
 	int Cr;
 	Cr = GetColor(0,0,0);
-	while(( GetMouseInput() & MOUSE_INPUT_LEFT ) == 0){
-	}
+	WaitKey();
 	GetMousePoint( &x , &y );
 	ClearDrawScreen(); // âÊñ Çè¡Ç∑
 	DrawString(x,y,moji,Cr);

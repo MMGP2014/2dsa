@@ -1,6 +1,6 @@
 #include "DxLib.h"
 #include "prot.h"
-//#include "mypath.h"
+#include "mypath.h"
 #include <windows.h>
 #include <string.h>
 
@@ -21,8 +21,8 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 	WaitKey() ;				// ÉLÅ[ì¸óÕë“Çø
 
-//	int handle = LoadGraph(PIC "man.jpg");
-	int handle = LoadGraph("C:\\Users\\takahiro\\Desktop\\2dsa\\PIC\\man.jpg");
+	int handle = LoadGraph(PIC "man.jpg");
+	
 	
 	ClearDrawScreen(); // âÊñ Çè¡Ç∑
 	DrawGraph(100,100,handle,TRUE);
