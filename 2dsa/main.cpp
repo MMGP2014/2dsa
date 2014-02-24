@@ -19,6 +19,7 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	ScreenFlip(); //— ‰æ–Ê‚ğ•\‰æ–Ê‚É”½‰f
 	click_moji("thank you!");
 
+	click_moji("‘‚â‚µ‚½‚æ");
 	WaitKey() ;				// ƒL[“ü—Í‘Ò‚¿
 
 	int handle = LoadGraph(PIC "man.jpg");
