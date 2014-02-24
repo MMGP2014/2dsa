@@ -15,7 +15,7 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 	int Cr;
 	Cr = GetColor( 0 , 0 , 0 ) ;
-    	DrawString( 250 , 240 - 32 , "べ、別にあなたに弄られても、何も感じないんだからねっ！!\n" , Cr ); // 文字列の描画
+    	DrawString( 200 , 240 - 32 , "べ、別にあなたに弄られても、何も感じないんだからねっ！!\n" , Cr ); // 文字列の描画
 	ScreenFlip(); //裏画面を表画面に反映
 	click_moji(" ぃ．．．うぅぅ。．．．ぁん！");
 
