@@ -19,6 +19,7 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	ScreenFlip(); //裏画面を表画面に反映
 	click_moji(" ぃ．．．うぅぅ。．．．ぁん！");
 
+	click_moji("増やしたよ");
 	WaitKey() ;				// キー入力待ち
 
 	int handle = LoadGraph(PIC "man.jpg");
