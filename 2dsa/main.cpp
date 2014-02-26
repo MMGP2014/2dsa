@@ -3,7 +3,7 @@
 #include "mypath.h"
 #include <windows.h>
 #include <string.h>
-
+//////
 // プログラムは WinMain から始まります
 int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow )
 {
@@ -15,7 +15,7 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 	int Cr;
 	Cr = GetColor( 200 , 200 , 200 ) ;
-    	DrawString( 200 , 250 -0, "TEST。" , Cr ); // 文字列の描画
+    	DrawString( 200 , 250 -0, "TああああああああうｍがｌがあああああEST。" , Cr ); // 文字列の描画
 	ScreenFlip(); //裏画面を表画面に反映
 	
 
