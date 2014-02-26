@@ -15,21 +15,20 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 	int Cr;
 	Cr = GetColor( 200 , 200 , 200 ) ;
-    	DrawString( 200 , 250 -0, "ロリコン。" , Cr ); // 文字列の描画
+    	DrawString( 200 , 250 -0, "TEST。" , Cr ); // 文字列の描画
 	ScreenFlip(); //裏画面を表画面に反映
-	click_moji("あぁ！もおう、画面から出てきてくれよ！");
+	
 
-
-	click_moji("俺が抱きしめてやるからさぁ！！！");
 	WaitKey() ;				// キー入力待ち
 
-	int handle = LoadGraph(PIC "tarou.png");
-	
-	
+	int handle = LoadGraph(PIC "man.png");
 	ClearDrawScreen(); // 画面を消す
 	DrawGraph( 50,0,handle,TRUE);
 	ScreenFlip(); //裏画面を表画面に反映
-
+	
+	WaitKey() ;
+	
+	playing();
 
 	WaitKey() ;				// キー入力待ち
 	DxLib_End() ;				// ＤＸライブラリ使用の終了処理
