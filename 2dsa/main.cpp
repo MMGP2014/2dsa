@@ -14,19 +14,20 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	ClearDrawScreen(); // 画面を消す
 
 	int Cr;
-	Cr = GetColor( 0 , 0 , 0 ) ;
-    	DrawString( 250 , 240 - 32 , "aaaa\n" , Cr ); // 文字列の描画
+	Cr = GetColor( 200 , 200 , 200 ) ;
+    	DrawString( 200 , 250 -0, "ロリコン。" , Cr ); // 文字列の描画
 	ScreenFlip(); //裏画面を表画面に反映
-	click_moji("dskjf");
+	click_moji("あぁ！もおう、画面から出てきてくれよ！");
 
-	click_moji("増やしたよ");
+
+	click_moji("俺が抱きしめてやるからさぁ！！！");
 	WaitKey() ;				// キー入力待ち
 
 	int handle = LoadGraph(PIC "tarou.png");
 	
 	
 	ClearDrawScreen(); // 画面を消す
-	DrawGraph(100,100,handle,TRUE);
+	DrawGraph( 50,0,handle,TRUE);
 	ScreenFlip(); //裏画面を表画面に反映
 
 
