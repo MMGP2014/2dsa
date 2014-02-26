@@ -9,20 +9,20 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 {
 	ChangeWindowMode(TRUE); // ウィンドウモードに設定
 	if( DxLib_Init() == -1 ) return -1;
-	SetBackgroundColor(255,255,255);
+	SetBackgroundColor(255,0,0);
 	SetDrawScreen( DX_SCREEN_BACK ); //描画先を裏画面に設定
 	ClearDrawScreen(); // 画面を消す
 
 	int Cr;
 	Cr = GetColor( 0 , 0 , 0 ) ;
-    	DrawString( 250 , 240 - 32 , "べ、別にあなたに弄られても、何も感じないんだからねっ！!\n" , Cr ); // 文字列の描画
+    	DrawString( 250 , 240 - 32 , "aaaa\n" , Cr ); // 文字列の描画
 	ScreenFlip(); //裏画面を表画面に反映
-	click_moji(" ぃ．．．うぅぅ。．．．ぁん！");
+	click_moji("dskjf");
 
 	click_moji("増やしたよ");
 	WaitKey() ;				// キー入力待ち
 
-	int handle = LoadGraph(PIC "man.jpg");
+	int handle = LoadGraph(PIC "tarou.png");
 	
 	
 	ClearDrawScreen(); // 画面を消す
