@@ -35,12 +35,16 @@ int playing(void){
 	char buf[256];	
 
 	while(1){
+			
+
 		GetHitKeyStateAll( buf ) ;
 		int cr;
 		i++;
 		cr=GetColor(100,100,100);
-		ClearDrawScreen();
-
+		if(ClearDrawScreen() != 0){
+			continue;
+		}
+	
 	if (i>100)break;
 	
 		if(buf[KEY_INPUT_LEFT] == 1){
@@ -60,7 +64,7 @@ int playing(void){
 		}
 		ScreenFlip();
 		
-//move_obj("tarou.png",&crd,UDspeed,LRspeed);
+move_obj("tarou.png",&crd,UDspeed,LRspeed);
 	}
 	WaitKey();
 	return 0;
@@ -73,7 +77,7 @@ void move_obj(char *name,COORD2 *crd,int UDspeed,int LRspeed){
 
 	int handle = LoadGraph(pname);
 	ClearDrawScreen();
-//	DrawGraph(crd->x,crd->y,handle,TRUE);
+	DrawGraph(crd->x,crd->y,handle,TRUE);
 	ScreenFlip();
 
 }
