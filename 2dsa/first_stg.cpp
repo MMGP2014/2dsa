@@ -79,5 +79,5 @@ void move_obj(char *name,COORD2 *crd,int UDspeed,int LRspeed){
 	ClearDrawScreen();
 	DrawGraph(crd->x,crd->y,handle,TRUE);
 	ScreenFlip();
-
+//////
 }
