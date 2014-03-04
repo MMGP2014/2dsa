@@ -1,4 +1,4 @@
-#include "DxLib.h"
+#include "Dxlib.h"
 #include "prot.h"
 #include "mypath.h"
 #include <windows.h>
@@ -30,7 +30,7 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	
 	playing();
 
-	WaitKey() ;				// キー入力待ち
+//	WaitKey() ;				// キー入力待ち
 	DxLib_End() ;				// ＤＸライブラリ使用の終了処理
 	return 0 ;				// ソフトの終了 
 }
