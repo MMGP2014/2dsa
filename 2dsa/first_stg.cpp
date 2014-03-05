@@ -34,35 +34,38 @@ int playing(void){
 	i=0;
 	char buf[256];	
 
+    int cr;
 	while(1){
 		GetHitKeyStateAll( buf ) ;
-		int cr;
 		i++;
 		cr=GetColor(100,100,100);
+		ScreenFlip();
 		ClearDrawScreen();
 
 	if (i>100)break;
-	
-		if(buf[KEY_INPUT_LEFT] == 1){
+		if(buf[KEY_INPUT_LEFT] >= 1){
 		DrawString(100,100,"left",cr);
 			LRspeed =-1;
-		}else if(buf[KEY_INPUT_RIGHT] == 1){
+		}
+		if(buf[KEY_INPUT_RIGHT] >= 1){
 		DrawString(100,100,"right",cr);
 			LRspeed =1;
-		}else if(buf[KEY_INPUT_DOWN] == 1){
+		}
+		if(buf[KEY_INPUT_DOWN] >= 1){
 		DrawString(100,100,"do",cr);
 			UDspeed = 1;
-		}else if(buf[KEY_INPUT_UP] == 1){
+		}
+		if(buf[KEY_INPUT_UP] >= 1){
 		DrawString(100,100,"up",cr);
 			UDspeed = -1;
-		}else if(buf[KEY_INPUT_SPACE] == 1){
+		}
+		if(buf[KEY_INPUT_SPACE] >= 1){
 			break;
 		}
-		ScreenFlip();
-		
-//move_obj("tarou.png",&crd,UDspeed,LRspeed);
+//	DrawString(100,i,"up",cr);
+	move_obj("tarou.png",&crd,UDspeed,LRspeed);
 	}
-	WaitKey();
+//	WaitKey();
 	return 0;
 }
 void move_obj(char *name,COORD2 *crd,int UDspeed,int LRspeed){
@@ -73,7 +76,5 @@ void move_obj(char *name,COORD2 *crd,int UDspeed,int LRspeed){
 
 	int handle = LoadGraph(pname);
 	ClearDrawScreen();
-//	DrawGraph(crd->x,crd->y,handle,TRUE);
-	ScreenFlip();
-
+	DrawGraph(crd->x,crd->y,handle,TRUE);
 }
