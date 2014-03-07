@@ -2,79 +2,66 @@
 #include "prot.h"
 #include "mypath.h"
 #include <stdio.h>
+#include <string.h>
 
 
 
 int playing(void){
-	int i;
-	int a;
-	int LRspeed=0;
-	int UDspeed =0;
-	int left = LEFT;
-	int right = RIGHT;
-	int up = UP;
-	int down = DOWN;
-	int jump = JUMP;
-
+	int i=0;
+	int LRspeed=0,UDspeed =0;
+	int turnflag=0;
+    	int cr;
+	char stage_name[]=PIC "stage_test.png";
+	char main_name[]=PIC "tarou2.png";
+	int stage_handle = LoadGraph(stage_name);
+	int main_handle = LoadGraph(main_name);
+	char key[256];	
 	COORD2 crd;
-	
-	crd.x=250;
-	crd.y=250;
-	
 
-	int handle = LoadGraph(PIC "tarou.png");
-	ClearDrawScreen(); // ‰æ–Ê‚ðÁ‚·
-	DrawGraph( 150,20,handle,TRUE);
-	ScreenFlip(); //— ‰æ–Ê‚ð•\‰æ–Ê‚É”½‰f
-	WaitKey();
-	char aa[100];
-	sprintf(aa,"%d%d%d%d%d",left,right,up,down,jump);
-	click_moji(aa);
-	WaitKey();
-	i=0;
-	char buf[256];	
+	stage_handle = LoadGraph(stage_name);
+	
+	crd.x=250;crd.y=250; //test
 
-    int cr;
-	while(1){
-		GetHitKeyStateAll( buf ) ;
-		i++;
-		cr=GetColor(100,100,100);
+	while( ProcessMessage() == 0){
 		ScreenFlip();
 		ClearDrawScreen();
+		DrawGraph(0,0,stage_handle,0);
+		GetHitKeyStateAll( key ) ;
+		i++;
+		cr=GetColor(100,100,100);
 
-	if (i>100)break;
-		if(buf[KEY_INPUT_LEFT] >= 1){
-		DrawString(100,100,"left",cr);
-			LRspeed =-1;
+		if(key[KEY_INPUT_LEFT] >= 1){
+		       	LRspeed =-2;
+		}else if(key[KEY_INPUT_RIGHT] >= 1){ 
+			LRspeed =2;
+		}else{ 
+			LRspeed=0;
+	       	}
+		if(key[KEY_INPUT_DOWN] >= 1){
+			UDspeed = 2;
+		}else if(key[KEY_INPUT_UP] >= 1){
+			UDspeed = -2;
+		}else{
+		       UDspeed = 0;
 		}
-		if(buf[KEY_INPUT_RIGHT] >= 1){
-		DrawString(100,100,"right",cr);
-			LRspeed =1;
-		}
-		if(buf[KEY_INPUT_DOWN] >= 1){
-		DrawString(100,100,"do",cr);
-			UDspeed = 1;
-		}
-		if(buf[KEY_INPUT_UP] >= 1){
-		DrawString(100,100,"up",cr);
-			UDspeed = -1;
-		}
-		if(buf[KEY_INPUT_SPACE] >= 1){
+	        if(key[KEY_INPUT_RETURN] >= 1){
 			break;
 		}
-//	DrawString(100,i,"up",cr);
-	move_obj("tarou.png",&crd,UDspeed,LRspeed);
+
+		if(LRspeed < 0){
+			turnflag = 1;
+		} else if(LRspeed > 0){
+	      		turnflag = 0;
+		}
+	
+		DrawString(540,0,"END:[ENTER]",cr);
+		move_obj(main_handle,&crd,UDspeed,LRspeed,turnflag);
 	}
 //	WaitKey();
 	return 0;
 }
-void move_obj(char *name,COORD2 *crd,int UDspeed,int LRspeed){
+void move_obj(int handle,COORD2 *crd,int UDspeed,int LRspeed,int turnflag){
 	crd->y = crd->y + UDspeed;
 	crd->x = crd->x + LRspeed;
-	char pname[10000];
-		sprintf(pname,"%s%s",PIC,name);
-
-	int handle = LoadGraph(pname);
-	ClearDrawScreen();
-	DrawGraph(crd->x,crd->y,handle,TRUE);
+	DrawRotaGraph(crd->x,crd->y,EXTRATE,0.0,handle,TRUE,turnflag);
 }
