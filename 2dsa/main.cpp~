@@ -11,6 +11,7 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	if( DxLib_Init() == -1 ) return -1;
 	SetBackgroundColor(255,255,255);
 	SetDrawScreen( DX_SCREEN_BACK ); //•`‰ææ‚ğ— ‰æ–Ê‚Éİ’è
+	
 	ClearDrawScreen();
 	ScreenFlip(); //— ‰æ–Ê‚ğ•\‰æ–Ê‚É”½‰f
 
