@@ -39,15 +39,10 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 {
 	ChangeWindowMode(TRUE); // ウィンドウモードに設定
 	if( DxLib_Init() == -1 ) return -1;
-	SetBackgroundColor(255,0,0);
+	SetBackgroundColor(255,255,255);
 	SetDrawScreen( DX_SCREEN_BACK ); //描画先を裏画面に設定
-	ClearDrawScreen(); // 画面を消す
-
-	int Cr;
-	Cr = GetColor( 200 , 200 , 200 ) ;
-    	DrawString( 200 , 250 -0, "TああああああああうｍがｌがあああああEST。" , Cr ); // 文字列の描画
-	ScreenFlip(); //裏画面を表画面に反映
 	
+<<<<<<< HEAD
 >>>>>>> 8582e4ccb8925e7ea6ec51d32ed4b08e800bf1bd
 
                 if( Key[ KEY_INPUT_RIGHT ] >= 1 ){ // 右キーが押されていたら
@@ -74,4 +69,13 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 	DxLib_End(); // DXライブラリ終了処理
 	return 0;
+=======
+	ClearDrawScreen();
+	ScreenFlip(); //裏画面を表画面に反映
+
+	first_stg();
+
+	DxLib_End() ;				// ＤＸライブラリ使用の終了処理
+	return 0 ;				// ソフトの終了 
+>>>>>>> d99406205f492fc177609250358383440a6b5747
 }
