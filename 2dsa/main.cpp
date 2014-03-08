@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 #include "DxLib.h"
 
 int Key[256]; // キーが押されているフレーム数を格納する
@@ -27,23 +26,6 @@ int k=0;
 cr=GetColor(100,100,100);
         // while(裏画面を表画面に反映, メッセージ処理, 画面クリア, キーの更新)
         while( ScreenFlip()==0 && ProcessMessage()==0 && ClearDrawScreen()==0 && gpUpdateKey()==0 ){
-=======
-#include "Dxlib.h"
-#include "prot.h"
-#include "mypath.h"
-#include <windows.h>
-#include <string.h>
-//////
-// プログラムは WinMain から始まります
-int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow )
-{
-	ChangeWindowMode(TRUE); // ウィンドウモードに設定
-	if( DxLib_Init() == -1 ) return -1;
-	SetBackgroundColor(255,255,255);
-	SetDrawScreen( DX_SCREEN_BACK ); //描画先を裏画面に設定
-	
-<<<<<<< HEAD
->>>>>>> 8582e4ccb8925e7ea6ec51d32ed4b08e800bf1bd
 
                 if( Key[ KEY_INPUT_RIGHT ] >= 1 ){ // 右キーが押されていたら
 			x++;                       // 右へ移動
@@ -69,13 +51,4 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 	DxLib_End(); // DXライブラリ終了処理
 	return 0;
-=======
-	ClearDrawScreen();
-	ScreenFlip(); //裏画面を表画面に反映
-
-	first_stg();
-
-	DxLib_End() ;				// ＤＸライブラリ使用の終了処理
-	return 0 ;				// ソフトの終了 
->>>>>>> d99406205f492fc177609250358383440a6b5747
 }
