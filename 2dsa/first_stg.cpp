@@ -35,34 +35,53 @@ int playing(void){
 	char buf[256];	
 
     int cr;
+	int i1,i2;
+	char kb[100];
+		LRspeed=1;
+
 	while(1){
 		GetHitKeyStateAll( buf ) ;
 		i++;
 		cr=GetColor(100,100,100);
 		ScreenFlip();
 		ClearDrawScreen();
+	/*
 
-	if (i>100)break;
+		for(i1=0;i1<8;i1++){
+			for(i2=0;i2<32;i2++){
+				sprintf(kb,"%d",buf[i1*32+i2]);
+				DrawString(i1*40,i2*15,kb,cr);
+			}
+		}
+
+*/
+/*
+
+	if (i>1000)break;
 		if(buf[KEY_INPUT_LEFT] >= 1){
-		DrawString(100,100,"left",cr);
+//		DrawString(100,100,"left",cr);
 			LRspeed =-1;
 		}
 		if(buf[KEY_INPUT_RIGHT] >= 1){
-		DrawString(100,100,"right",cr);
+//		DrawString(100,100,"right",cr);
 			LRspeed =1;
 		}
 		if(buf[KEY_INPUT_DOWN] >= 1){
-		DrawString(100,100,"do",cr);
+//		DrawString(100,100,"do",cr);
 			UDspeed = 1;
 		}
 		if(buf[KEY_INPUT_UP] >= 1){
-		DrawString(100,100,"up",cr);
+//		DrawString(100,100,"up",cr);
 			UDspeed = -1;
 		}
 		if(buf[KEY_INPUT_SPACE] >= 1){
 			break;
 		}
 //	DrawString(100,i,"up",cr);
+*/
+		if((i%10) == 0 ){
+			LRspeed *= -1;
+		}
 	move_obj("tarou.png",&crd,UDspeed,LRspeed);
 	}
 //	WaitKey();
