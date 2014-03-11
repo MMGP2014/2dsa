@@ -1,4 +1,3 @@
-//test
 #include "Dxlib.h"
 #include "prot.h"
 #include "mypath.h"

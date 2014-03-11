@@ -11,6 +11,7 @@
 #define BLOCK_NUM_H ( SCREEN_HIGHT / BLOCK_SIZE ) 
 #define OB_PIC_SIZE 32
 #define FLOOR_NUM 20
+#define LR_SPEED 4
 #define EXTRATE ((double)BLOCK_SIZE / (double)OB_PIC_SIZE)
 
 //struct
@@ -40,6 +41,6 @@ int key2int();
 int first_stg(void);
 int jump_before(COORD2,FLOOR);
 //fuction.cpp
-int print_char(char *);
-int print_int(int );
-int print_double(double );
+void print_char(char *);
+void print_int(int );
+void print_double(double );

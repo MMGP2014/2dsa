@@ -1,17 +1,19 @@
 #include "DxLib.h"
-#include <windows.h>
+#include "prot.h"
 #include <string.h>
 
-int click_moji(char *moji){
+void print_char(char str[]){
 //if( DxLib_Init() == -1 ) return -1 ;
-	int x,y;
 	int Cr;
 	Cr = GetColor(0,0,0);
-	WaitKey();
-	GetMousePoint( &x , &y );
-	ClearDrawScreen(); // 画面を消す
-	DrawString(x,y,moji,Cr);
+	DrawString(SCREEN_WIDTH/2,SCREEN_HIGHT/2,str,Cr);
+}
 
-	ScreenFlip(); //裏画面を表画面に反映
-	return 0 ;				// ソフトの終了 
+void print_int(int num){
+//if( DxLib_Init() == -1 ) return -1 ;
+	int Cr;
+	Cr = GetColor(0,0,0);
+	char str[1000];
+	sprintf_s(str,"%d",num);
+	DrawString(SCREEN_WIDTH/2,SCREEN_HIGHT/2,str,Cr);
 }

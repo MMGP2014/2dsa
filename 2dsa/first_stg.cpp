@@ -84,9 +84,9 @@ int get_key_action(SPEED *speed,int *turnflag,FLOOR floor,COORD2 crd){
 
 	//左右のキー入力
 	if(key[KEY_INPUT_LEFT] >= 1){
-	       	speed->x =-4;
+	       	speed->x = -1 * LR_SPEED;
 	}else if(key[KEY_INPUT_RIGHT] >= 1){ 
-		speed->x =4;
+		speed->x = LR_SPEED;
 	}else{ 
 		speed->x=0;
        	}
@@ -96,9 +96,8 @@ int get_key_action(SPEED *speed,int *turnflag,FLOOR floor,COORD2 crd){
 	if(key[KEY_INPUT_DOWN] >= 1){
 		speed->y += 3;
 	}else if(key[KEY_INPUT_SPACE] >= 1 && jump_before(crd,floor)==1){
-		speed->y -= 20;
+		speed->y = -20;
 	}
-	
 
 	//エンターのキー入力(exit)
         if(key[KEY_INPUT_RETURN] >= 1) return 1; 
@@ -112,7 +111,7 @@ int get_key_action(SPEED *speed,int *turnflag,FLOOR floor,COORD2 crd){
 	return 0;
 }
 
- void input_csv(FLOOR *floor,char *fname){
+void input_csv(FLOOR *floor,char *fname){
 	int x,y;
 	char buf[256];
 	FILE *fp;
