@@ -9,7 +9,7 @@
 #define BLOCK_SIZE 32 //‚È‚ñ‚Æ‚©SIZE‚Ì’PˆÊ‚Ípixel‚¾‚æ
 #define BLOCK_NUM_W ( SCREEN_WIDTH / BLOCK_SIZE ) 
 #define BLOCK_NUM_H ( SCREEN_HIGHT / BLOCK_SIZE ) 
-#define OB_PIC_SIZE 100
+#define OB_PIC_SIZE 32
 #define FLOOR_NUM 20
 #define EXTRATE ((double)BLOCK_SIZE / (double)OB_PIC_SIZE)
 

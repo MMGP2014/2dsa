@@ -16,7 +16,7 @@ int first_stg(void){
 	char flr_name[1000];
 	char tmp_char[1000];
 	char stage[]="STAGE1";
-	char main_name[]=PIC "tarou2.png";
+	char main_name[]=PIC "sin.png";
 	int main_handle = LoadGraph(main_name);
 	SPEED speed;
 	COORD2 crd,flr_crd;
@@ -69,7 +69,7 @@ int first_stg(void){
 void move_obj(int handle,COORD2 *crd,SPEED *speed,int turnflag,FLOOR *floor){
 	crd->y = crd->y + speed->y;
 	crd->x = crd->x + speed->x;
-	DrawRotaGraph(crd->x,crd->y,EXTRATE,0.0,handle,0,turnflag);
+	DrawRotaGraph(crd->x,crd->y,EXTRATE,0.0,handle,1,turnflag);
 }
 
 
@@ -149,12 +149,12 @@ void check_contact(COORD2 *crd,SPEED *speed,FLOOR *floor){
 	block_pxl = (crd->x - (BLOCK_SIZE / 2) + speed->x ) / BLOCK_SIZE;
 	while(speed->y > 0){
 		block_pyd = (crd->y + (BLOCK_SIZE / 2) + speed->y - 1 ) / BLOCK_SIZE;
-		if((floor->block[block_pxr][block_pyu] == 0) && (floor->block[block_pxl][block_pyd] == 0)) break;
+		if((floor->block[block_pxr][block_pyd] == 0) && (floor->block[block_pxl][block_pyd] == 0)) break;
 		speed->y--;
 	}
 	while(speed->y < 0){
 		block_pyu = (crd->y - (BLOCK_SIZE / 2) + speed->y ) / BLOCK_SIZE;
-		if((floor->block[block_pxr][block_pyu] == 0) && (floor->block[block_pxl][block_pyd] == 0)) break;
+		if((floor->block[block_pxr][block_pyu] == 0) && (floor->block[block_pxl][block_pyu] == 0)) break;
 		speed->y++;
 	}
 }
