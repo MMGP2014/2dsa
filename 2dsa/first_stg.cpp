@@ -10,6 +10,8 @@ int first_stg(void){
 	int i,j;
 	int turnflag=0;
     	int cr;
+	int col0=GetColor(255,0,0);
+	int col1=GetColor(0,255,0);
 	FLOOR floor[ FLOOR_NUM ][ FLOOR_NUM ];
 	char flr_name[1000];
 	char tmp_char[1000];
@@ -47,7 +49,17 @@ int first_stg(void){
 		//print_char(tmp_char);
 		//print_int(flr_crd.x);
 		//print_int(flr_crd.y);
-
+		/*
+		for(i=1;i<=640;i++){
+			for(j=1;j<=480;j++){
+				if(floor[flr_crd.x][flr_crd.y] == 1){
+				       	DrawPixel(i,j,col1);
+				}else if(floor[flr_crd.x][flr_crd.y] == 0 ){
+				       	DrawPixel(i,j,col0);
+				}
+			}
+		}
+		*/
 		if(get_key_action(&speed,&turnflag)) break;
 		check_contact(&crd,&speed,&floor[flr_crd.x][flr_crd.y]);
 		move_obj(main_handle,&crd,&speed,turnflag,&floor[flr_crd.x][flr_crd.y]);
@@ -111,6 +123,7 @@ int get_key_action(SPEED *speed,int *turnflag){
 			floor->block[x][y] = atoi(&buf[2*x]);
 		}
 	}
+	fclose(fp);
 }
 
 void check_contact(COORD2 *crd,SPEED *speed,FLOOR *floor){
@@ -120,28 +133,30 @@ void check_contact(COORD2 *crd,SPEED *speed,FLOOR *floor){
 	int block_pyd;
 
 	block_pyd = (crd->y + (BLOCK_SIZE / 2)  - 1) / BLOCK_SIZE;
-	block_pyu = (crd->y - (BLOCK_SIZE / 2)     ) / BLOCK_SIZE;
+	block_pyu = (crd->y - (BLOCK_SIZE / 2)) / BLOCK_SIZE;
 	while(speed->x > 0){
 		block_pxr = (crd->x + (BLOCK_SIZE / 2) + speed->x - 1) / BLOCK_SIZE;
 		if((floor->block[block_pxr][block_pyu] == 0) && (floor->block[block_pxr][block_pyd] == 0)) break;
 		speed->x--;
 	}
 	while(speed->x < 0){
-		block_pxl = (crd->x - (BLOCK_SIZE / 2) + speed->x  ) / BLOCK_SIZE;
+		block_pxl = (crd->x - (BLOCK_SIZE / 2) + speed->x ) / BLOCK_SIZE;
 		if((floor->block[block_pxl][block_pyu] == 0) && (floor->block[block_pxl][block_pyd] == 0)) break;
 		speed->x++;
 	}
 
 	block_pxr = (crd->x + (BLOCK_SIZE / 2) + speed->x - 1) / BLOCK_SIZE;
-	block_pxl = (crd->x - (BLOCK_SIZE / 2) + speed->x  ) / BLOCK_SIZE;
+	block_pxl = (crd->x - (BLOCK_SIZE / 2) + speed->x ) / BLOCK_SIZE;
 	while(speed->y > 0){
-		block_pyd = (crd->y + (BLOCK_SIZE / 2) + speed->y - 1) / BLOCK_SIZE;
-		if((floor->block[block_pxl][block_pyu] == 0) && (floor->block[block_pxl][block_pyd] == 0)) break;
+		block_pyd = (crd->y + (BLOCK_SIZE / 2) + speed->y - 1 ) / BLOCK_SIZE;
+		if((floor->block[block_pxr][block_pyu] == 0) && (floor->block[block_pxl][block_pyd] == 0)) break;
 		speed->y--;
 	}
-	while(speed->x < 0){
-		block_pyu = (crd->x - (BLOCK_SIZE / 2) + speed->y  ) / BLOCK_SIZE;
-		if((floor->block[block_pxl][block_pyu] == 0) && (floor->block[block_pxl][block_pyd] == 0)) break;
+	while(speed->y < 0){
+		block_pyu = (crd->y - (BLOCK_SIZE / 2) + speed->y ) / BLOCK_SIZE;
+		if((floor->block[block_pxr][block_pyu] == 0) && (floor->block[block_pxl][block_pyd] == 0)) break;
 		speed->y++;
 	}
 }
+
+
