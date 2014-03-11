@@ -34,35 +34,57 @@ int playing(void){
 	i=0;
 	char buf[256];	
 
+    int cr;
+	int i1,i2;
+	char kb[100];
+		LRspeed=1;
+
 	while(1){
 		GetHitKeyStateAll( buf ) ;
-		int cr;
 		i++;
 		cr=GetColor(100,100,100);
+		ScreenFlip();
 		ClearDrawScreen();
+	/*
 
-	if (i>100)break;
-	
-		if(buf[KEY_INPUT_LEFT] == 1){
-		DrawString(100,100,"left",cr);
+		for(i1=0;i1<8;i1++){
+			for(i2=0;i2<32;i2++){
+				sprintf(kb,"%d",buf[i1*32+i2]);
+				DrawString(i1*40,i2*15,kb,cr);
+			}
+		}
+
+*/
+/*
+
+	if (i>1000)break;
+		if(buf[KEY_INPUT_LEFT] >= 1){
+//		DrawString(100,100,"left",cr);
 			LRspeed =-1;
-		}else if(buf[KEY_INPUT_RIGHT] == 1){
-		DrawString(100,100,"right",cr);
+		}
+		if(buf[KEY_INPUT_RIGHT] >= 1){
+//		DrawString(100,100,"right",cr);
 			LRspeed =1;
-		}else if(buf[KEY_INPUT_DOWN] == 1){
-		DrawString(100,100,"do",cr);
+		}
+		if(buf[KEY_INPUT_DOWN] >= 1){
+//		DrawString(100,100,"do",cr);
 			UDspeed = 1;
-		}else if(buf[KEY_INPUT_UP] == 1){
-		DrawString(100,100,"up",cr);
+		}
+		if(buf[KEY_INPUT_UP] >= 1){
+//		DrawString(100,100,"up",cr);
 			UDspeed = -1;
-		}else if(buf[KEY_INPUT_SPACE] == 1){
+		}
+		if(buf[KEY_INPUT_SPACE] >= 1){
 			break;
 		}
-		ScreenFlip();
-		
-//move_obj("tarou.png",&crd,UDspeed,LRspeed);
+//	DrawString(100,i,"up",cr);
+*/
+		if((i%10) == 0 ){
+			LRspeed *= -1;
+		}
+	move_obj("tarou.png",&crd,UDspeed,LRspeed);
 	}
-	WaitKey();
+//	WaitKey();
 	return 0;
 }
 void move_obj(char *name,COORD2 *crd,int UDspeed,int LRspeed){
@@ -73,7 +95,5 @@ void move_obj(char *name,COORD2 *crd,int UDspeed,int LRspeed){
 
 	int handle = LoadGraph(pname);
 	ClearDrawScreen();
-//	DrawGraph(crd->x,crd->y,handle,TRUE);
-	ScreenFlip();
-
+	DrawGraph(crd->x,crd->y,handle,TRUE);
 }
