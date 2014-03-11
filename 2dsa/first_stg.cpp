@@ -60,7 +60,7 @@ int first_stg(void){
 			}
 		}
 		*/
-		if(get_key_action(&speed,&turnflag)) break;
+		if(get_key_action(&speed,&turnflag,floor[flr_crd.x][flr_crd.y],crd))break;
 		check_contact(&crd,&speed,&floor[flr_crd.x][flr_crd.y]);
 		move_obj(main_handle,&crd,&speed,turnflag,&floor[flr_crd.x][flr_crd.y]);
 	}
@@ -73,7 +73,7 @@ void move_obj(int handle,COORD2 *crd,SPEED *speed,int turnflag,FLOOR *floor){
 }
 
 
-int get_key_action(SPEED *speed,int *turnflag){
+int get_key_action(SPEED *speed,int *turnflag,FLOOR floor,COORD2 crd){
 	/************************************************* 
 	/キー入力を読み取り、上下左右のスピードを計算する
 	/また移動方向によりキャラの向きも算出する
@@ -84,21 +84,21 @@ int get_key_action(SPEED *speed,int *turnflag){
 
 	//左右のキー入力
 	if(key[KEY_INPUT_LEFT] >= 1){
-	       	speed->x =-2;
+	       	speed->x =-4;
 	}else if(key[KEY_INPUT_RIGHT] >= 1){ 
-		speed->x =2;
+		speed->x =4;
 	}else{ 
 		speed->x=0;
        	}
 
 	//上下のキー入力
+	if(speed->y < 5) speed->y+=2;
 	if(key[KEY_INPUT_DOWN] >= 1){
-		speed->y = 2;
-	}else if(key[KEY_INPUT_UP] >= 1){
-		speed->y = -2;
-	}else{
-	        speed->y = 0;
+		speed->y += 3;
+	}else if(key[KEY_INPUT_SPACE] >= 1 && jump_before(crd,floor)==1){
+		speed->y -= 20;
 	}
+	
 
 	//エンターのキー入力(exit)
         if(key[KEY_INPUT_RETURN] >= 1) return 1; 
@@ -159,4 +159,19 @@ void check_contact(COORD2 *crd,SPEED *speed,FLOOR *floor){
 	}
 }
 
+int jump_before(COORD2 crd,FLOOR floor){
 
+	int block_pyd;
+	int block_pxr;
+	int block_pxl;
+
+
+	block_pyd = (crd.y + (BLOCK_SIZE / 2) ) / BLOCK_SIZE;
+	block_pxr = (crd.x + (BLOCK_SIZE / 2)  -1) / BLOCK_SIZE;
+	block_pxl = (crd.x - (BLOCK_SIZE / 2)  ) / BLOCK_SIZE;
+
+	if(floor.block[block_pxl][block_pyd] ==0){
+		return 0;
+	}
+	return 1;
+}

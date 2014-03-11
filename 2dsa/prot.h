@@ -35,9 +35,10 @@ typedef struct tble3{
 void move_obj(int ,COORD2 *,SPEED *,int ,FLOOR *);
 void input_csv(FLOOR *,char *);
 void check_contact(COORD2 *,SPEED *,FLOOR *);
-int get_key_action(SPEED *,int *);
+int get_key_action(SPEED *,int *,FLOOR,COORD2);
 int key2int();
 int first_stg(void);
+int jump_before(COORD2,FLOOR);
 //fuction.cpp
 int print_char(char *);
 int print_int(int );
