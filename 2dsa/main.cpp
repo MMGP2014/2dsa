@@ -44,3 +44,4 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	return 0;
 }
 */
+c:\Users\ÇÈÇ§Ç°Å[\Desktop\2dsa\2dsa\main.cpp
