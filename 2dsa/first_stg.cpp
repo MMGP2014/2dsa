@@ -169,8 +169,9 @@ int jump_before(COORD2 crd,FLOOR floor){
 	block_pxr = (crd.x + (BLOCK_SIZE / 2)  -1) / BLOCK_SIZE;
 	block_pxl = (crd.x - (BLOCK_SIZE / 2)  ) / BLOCK_SIZE;
 
-	if(floor.block[block_pxl][block_pyd] ==0){
+	if(floor.block[block_pxl][block_pyd]==0&&floor.block[block_pxr][block_pyd] ==0){
 		return 0;
 	}
+
 	return 1;
 }
