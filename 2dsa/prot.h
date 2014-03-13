@@ -9,7 +9,8 @@
 #define BLOCK_SIZE 32 //‚È‚ñ‚Æ‚©SIZE‚Ì’PˆÊ‚Ípixel‚¾‚æ
 #define BLOCK_NUM_W ( SCREEN_WIDTH / BLOCK_SIZE ) 
 #define BLOCK_NUM_H ( SCREEN_HIGHT / BLOCK_SIZE ) 
-#define OB_PIC_SIZE 32
+#define MAIN_PIC "tarou2.png"
+#define OB_PIC_SIZE 100
 #define FLOOR_NUM 20
 #define LR_SPEED 4
 #define EXTRATE ((double)BLOCK_SIZE / (double)OB_PIC_SIZE)
@@ -18,6 +19,12 @@
 #define BULLET0_SPEED_Y 0
 #define BULLET0_ACCEL_X 0
 #define BULLET0_ACCEL_Y 0
+#define BULLET0_ACCEL_FREQUENCY 1
+#define BULLET1_SPEED_X 7
+#define BULLET1_SPEED_Y -10
+#define BULLET1_ACCEL_X 0
+#define BULLET1_ACCEL_Y 1
+#define BULLET1_ACCEL_FREQUENCY 2
 
 //struct
 typedef struct tble1{
@@ -41,6 +48,8 @@ typedef struct tble4{
 	COORD2 crd;
 	SPEED speed;
 	SPEED accel;
+	int freq;
+	int freq_cnt;
 	struct tble4 *next;
 	struct tble4 *pre;
 }BULLET;
@@ -50,7 +59,7 @@ typedef struct tble4{
 void move_obj(int ,COORD2 *,SPEED *,int );
 void input_csv(FLOOR *,char *);
 void check_contact(COORD2 *,SPEED *,FLOOR *);
-BULLET *get_key_action(SPEED *,int *,FLOOR,COORD2,BULLET *,int *,int *);
+int get_key_action(SPEED *,int *,FLOOR,COORD2,BULLET *,int *,int *);
 int key2int();
 int first_stg(void);
 int jump_before(COORD2,FLOOR);
@@ -59,6 +68,6 @@ void print_char(char *);
 void print_int(int );
 void print_double(double );
 //list.cpp
-BULLET *add_bullet(BULLET *);
+void add_bullet(BULLET *);
 void delete_bullet(BULLET *);
 void action_bullet(BULLET *);

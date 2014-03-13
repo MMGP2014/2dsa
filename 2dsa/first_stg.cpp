@@ -16,14 +16,22 @@ int first_stg(void){
 	char flr_name[1000];
 	char tmp_char[1000];
 	char stage[]="STAGE1";
-	char main_name[]=PIC "sin.png";
+	char main_name[]=PIC MAIN_PIC;
 	int main_handle = LoadGraph(main_name);
 	char bullet_name[BULLET_NUM][1000];
 	sprintf_s(bullet_name[0],"%s%s",PIC,"bullet01.png");
+	sprintf_s(bullet_name[1],"%s%s",PIC,"bullet01.png");
 	int bullet_handle[BULLET_NUM];
 	bullet_handle[0] = LoadGraph(bullet_name[0]);
-	BULLET *bullet_list = NULL;
+	bullet_handle[1] = LoadGraph(bullet_name[1]);
+	BULLET bullet_first,bullet_last;
+	bullet_first.next = &bullet_last;
+	bullet_first.pre = NULL;
+	bullet_last.next = NULL;
+	bullet_last.pre = &bullet_first;
 	int bullet_flag[BULLET_NUM];
+	char music_name[]=MUSIC "boss_music.mp3";
+	PlaySoundFile(music_name,DX_PLAYTYPE_LOOP);
 	for(i=0;i < BULLET_NUM; i++){
 		bullet_flag[i] = 0;
 	}
@@ -70,9 +78,9 @@ int first_stg(void){
 			}
 		}
 		*/
-		bullet_list=get_key_action(&speed,&turnflag,floor[flr_crd.x][flr_crd.y],crd,bullet_list,bullet_handle,bullet_flag);
+		if(get_key_action(&speed,&turnflag,floor[flr_crd.x][flr_crd.y],crd,&bullet_last,bullet_handle,bullet_flag)==1) break;
 		check_contact(&crd,&speed,&floor[flr_crd.x][flr_crd.y]);
-		action_bullet(bullet_list);
+		action_bullet(&bullet_first);
 		move_obj(main_handle,&crd,&speed,turnflag);
 	}
 	return 0;
@@ -84,7 +92,7 @@ void move_obj(int handle,COORD2 *crd,SPEED *speed,int turnflag){
 }
 
 
-BULLET *get_key_action(SPEED *speed,int *turnflag,FLOOR floor,COORD2 crd,BULLET *bullet_list,int bullet_handle[],int *bullet_flag){
+int get_key_action(SPEED *speed,int *turnflag,FLOOR floor,COORD2 crd,BULLET *bullet_last,int bullet_handle[],int *bullet_flag){
 	/************************************************* 
 	/キー入力を読み取り、上下左右のスピードを計算する
 	/また移動方向によりキャラの向きも算出する
@@ -94,7 +102,7 @@ BULLET *get_key_action(SPEED *speed,int *turnflag,FLOOR floor,COORD2 crd,BULLET 
 	GetHitKeyStateAll( key ) ;
 
 	//エンターのキー入力(exit)
-//        if(key[KEY_INPUT_RETURN] >= 1) return 1; 
+        if(key[KEY_INPUT_RETURN] >= 1) return 1; 
 
 	//左右のキー入力
 	if(key[KEY_INPUT_LEFT] >= 1){
@@ -124,32 +132,40 @@ BULLET *get_key_action(SPEED *speed,int *turnflag,FLOOR floor,COORD2 crd,BULLET 
 	//攻撃タイプ0
 	if(key[KEY_INPUT_Z] >= 1){
 		if(bullet_flag[0] == 0){
-		//print_int(1);
-		bullet_list = add_bullet(bullet_list);
-		bullet_list->handle = bullet_handle[0];
-		bullet_list->turnflag = *turnflag ;
-		bullet_list->crd = crd;
-		bullet_list->crd.x += (1 + (1 + (-2) * *turnflag ) * (BLOCK_SIZE+1))/2;
-		bullet_list->speed.x = (1 + (-2) * *turnflag ) * BULLET0_SPEED_X;
-		bullet_list->speed.y = BULLET0_SPEED_Y;
-		bullet_list->accel.x = (1 + (-2) * *turnflag) * BULLET0_ACCEL_X;
-		bullet_list->accel.y = BULLET0_ACCEL_Y;
-		bullet_flag[0]++;
-		//delete_bullet(bullet_list);
+
+			add_bullet(bullet_last);
+			bullet_last->pre->handle = bullet_handle[0];
+			bullet_last->pre->turnflag = *turnflag ;
+			bullet_last->pre->crd = crd;
+			bullet_last->pre->crd.x += (1 + (1 + (-2) * *turnflag ) * (BLOCK_SIZE+1))/2;
+			bullet_last->pre->speed.x = (1 + (-2) * *turnflag ) * BULLET0_SPEED_X;
+			bullet_last->pre->speed.y = BULLET0_SPEED_Y;
+			bullet_last->pre->accel.x = (1 + (-2) * *turnflag) * BULLET0_ACCEL_X;
+			bullet_last->pre->accel.y = BULLET0_ACCEL_Y;
+			bullet_last->pre->freq = BULLET0_ACCEL_FREQUENCY;
+			bullet_last->pre->freq_cnt = 0;
+			bullet_flag[0]++;
 		}
 	}else bullet_flag[0]=0;
 	
 		
-/*memo miyashita */
-/*
- *get_keyにaddを入れる
- *while中にbulletリストを処理する関数を埋め込む
- *
- *
- */
-		
-	
-	return bullet_list;
+	if(key[KEY_INPUT_X] >= 1){
+		if(bullet_flag[1] == 0){
+			add_bullet(bullet_last);
+			bullet_last->pre->handle = bullet_handle[1];
+			bullet_last->pre->turnflag = *turnflag ;
+			bullet_last->pre->crd = crd;
+			bullet_last->pre->crd.x += (1 + (1 + (-2) * *turnflag ) * (BLOCK_SIZE+1))/2;
+			bullet_last->pre->speed.x = (1 + (-2) * *turnflag ) * BULLET1_SPEED_X;
+			bullet_last->pre->speed.y = BULLET1_SPEED_Y;
+			bullet_last->pre->accel.x = (1 + (-2) * *turnflag) * BULLET1_ACCEL_X;
+			bullet_last->pre->accel.y = BULLET1_ACCEL_Y;
+			bullet_last->pre->freq = BULLET1_ACCEL_FREQUENCY;
+			bullet_last->pre->freq_cnt = 0;
+			bullet_flag[1]++;
+		}
+	}else bullet_flag[1]=0;
+	return 0;
 }
 
 void input_csv(FLOOR *floor,char *fname){
