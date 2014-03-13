@@ -13,6 +13,11 @@
 #define FLOOR_NUM 20
 #define LR_SPEED 4
 #define EXTRATE ((double)BLOCK_SIZE / (double)OB_PIC_SIZE)
+#define BULLET_NUM 2
+#define BULLET0_SPEED_X 5
+#define BULLET0_SPEED_Y 0
+#define BULLET0_ACCEL_X 0
+#define BULLET0_ACCEL_Y 0
 
 //struct
 typedef struct tble1{
@@ -30,13 +35,22 @@ typedef struct tble3{
 	int y;
 }SPEED;
 
+typedef struct tble4{
+	int handle;
+	int turnflag;
+	COORD2 crd;
+	SPEED speed;
+	SPEED accel;
+	struct tble4 *next;
+	struct tble4 *pre;
+}BULLET;
 
 //prot
 //first_stg.cpp
-void move_obj(int ,COORD2 *,SPEED *,int ,FLOOR *);
+void move_obj(int ,COORD2 *,SPEED *,int );
 void input_csv(FLOOR *,char *);
 void check_contact(COORD2 *,SPEED *,FLOOR *);
-int get_key_action(SPEED *,int *,FLOOR,COORD2);
+BULLET *get_key_action(SPEED *,int *,FLOOR,COORD2,BULLET *,int *,int *);
 int key2int();
 int first_stg(void);
 int jump_before(COORD2,FLOOR);
@@ -44,3 +58,7 @@ int jump_before(COORD2,FLOOR);
 void print_char(char *);
 void print_int(int );
 void print_double(double );
+//list.cpp
+BULLET *add_bullet(BULLET *);
+void delete_bullet(BULLET *);
+void action_bullet(BULLET *);

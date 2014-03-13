@@ -18,6 +18,16 @@ int first_stg(void){
 	char stage[]="STAGE1";
 	char main_name[]=PIC "sin.png";
 	int main_handle = LoadGraph(main_name);
+	char bullet_name[BULLET_NUM][1000];
+	sprintf_s(bullet_name[0],"%s%s",PIC,"bullet01.png");
+	int bullet_handle[BULLET_NUM];
+	bullet_handle[0] = LoadGraph(bullet_name[0]);
+	BULLET *bullet_list = NULL;
+	int bullet_flag[BULLET_NUM];
+	for(i=0;i < BULLET_NUM; i++){
+		bullet_flag[i] = 0;
+	}
+
 	SPEED speed;
 	COORD2 crd,flr_crd;
 
@@ -60,20 +70,21 @@ int first_stg(void){
 			}
 		}
 		*/
-		if(get_key_action(&speed,&turnflag,floor[flr_crd.x][flr_crd.y],crd))break;
+		bullet_list=get_key_action(&speed,&turnflag,floor[flr_crd.x][flr_crd.y],crd,bullet_list,bullet_handle,bullet_flag);
 		check_contact(&crd,&speed,&floor[flr_crd.x][flr_crd.y]);
-		move_obj(main_handle,&crd,&speed,turnflag,&floor[flr_crd.x][flr_crd.y]);
+		action_bullet(bullet_list);
+		move_obj(main_handle,&crd,&speed,turnflag);
 	}
 	return 0;
 }
-void move_obj(int handle,COORD2 *crd,SPEED *speed,int turnflag,FLOOR *floor){
-	crd->y = crd->y + speed->y;
-	crd->x = crd->x + speed->x;
+void move_obj(int handle,COORD2 *crd,SPEED *speed,int turnflag){
+	crd->y +=  speed->y;
+	crd->x +=  speed->x;
 	DrawRotaGraph(crd->x,crd->y,EXTRATE,0.0,handle,1,turnflag);
 }
 
 
-int get_key_action(SPEED *speed,int *turnflag,FLOOR floor,COORD2 crd){
+BULLET *get_key_action(SPEED *speed,int *turnflag,FLOOR floor,COORD2 crd,BULLET *bullet_list,int bullet_handle[],int *bullet_flag){
 	/************************************************* 
 	/キー入力を読み取り、上下左右のスピードを計算する
 	/また移動方向によりキャラの向きも算出する
@@ -81,6 +92,9 @@ int get_key_action(SPEED *speed,int *turnflag,FLOOR floor,COORD2 crd){
 	 *************************************************/
 	char key[256];	
 	GetHitKeyStateAll( key ) ;
+
+	//エンターのキー入力(exit)
+//        if(key[KEY_INPUT_RETURN] >= 1) return 1; 
 
 	//左右のキー入力
 	if(key[KEY_INPUT_LEFT] >= 1){
@@ -99,8 +113,6 @@ int get_key_action(SPEED *speed,int *turnflag,FLOOR floor,COORD2 crd){
 		speed->y = -20;
 	}
 
-	//エンターのキー入力(exit)
-        if(key[KEY_INPUT_RETURN] >= 1) return 1; 
 
 	//キャラクターの向き
 	if(speed->x < 0){
@@ -108,7 +120,36 @@ int get_key_action(SPEED *speed,int *turnflag,FLOOR floor,COORD2 crd){
 	} else if(speed->x > 0){
       		*turnflag = 0;
 	}
-	return 0;
+
+	//攻撃タイプ0
+	if(key[KEY_INPUT_Z] >= 1){
+		if(bullet_flag[0] == 0){
+		//print_int(1);
+		bullet_list = add_bullet(bullet_list);
+		bullet_list->handle = bullet_handle[0];
+		bullet_list->turnflag = *turnflag ;
+		bullet_list->crd = crd;
+		bullet_list->crd.x += (1 + (1 + (-2) * *turnflag ) * (BLOCK_SIZE+1))/2;
+		bullet_list->speed.x = (1 + (-2) * *turnflag ) * BULLET0_SPEED_X;
+		bullet_list->speed.y = BULLET0_SPEED_Y;
+		bullet_list->accel.x = (1 + (-2) * *turnflag) * BULLET0_ACCEL_X;
+		bullet_list->accel.y = BULLET0_ACCEL_Y;
+		bullet_flag[0]++;
+		//delete_bullet(bullet_list);
+		}
+	}else bullet_flag[0]=0;
+	
+		
+/*memo miyashita */
+/*
+ *get_keyにaddを入れる
+ *while中にbulletリストを処理する関数を埋め込む
+ *
+ *
+ */
+		
+	
+	return bullet_list;
 }
 
 void input_csv(FLOOR *floor,char *fname){
