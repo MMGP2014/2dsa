@@ -17,15 +17,19 @@ int first_stg(void){
 	char tmp_char[1000];
 	char stage[]="STAGE1";
 	char main_name[]=PIC "sin.png";
+	
 	int main_handle = LoadGraph(main_name);
+
 	SPEED speed;
 	COORD2 crd,flr_crd;
 
 	cr=GetColor(100,100,100);
-
+	
 	flr_crd.x=10; flr_crd.y=10;//‰ŠúƒtƒƒA10,10
 	speed.x=0; speed.y=0;
+    
 
+	
 	for(i=0;i<FLOOR_NUM;i++){
 		for(j=0;j<FLOOR_NUM;j++){
 			if((i == 10) && (j == 10)){
@@ -37,6 +41,7 @@ int first_stg(void){
 			}
 		}
 	}
+
 	crd.x= BLOCK_SIZE * 2;
 	crd.y= BLOCK_SIZE * 2;
 
@@ -69,7 +74,9 @@ int first_stg(void){
 void move_obj(int handle,COORD2 *crd,SPEED *speed,int turnflag,FLOOR *floor){
 	crd->y = crd->y + speed->y;
 	crd->x = crd->x + speed->x;
+	
 	DrawRotaGraph(crd->x,crd->y,EXTRATE,0.0,handle,1,turnflag);
+	
 }
 
 

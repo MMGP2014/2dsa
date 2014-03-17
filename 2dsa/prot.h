@@ -33,7 +33,7 @@ typedef struct tble3{
 
 //prot
 //first_stg.cpp
-void move_obj(int ,COORD2 *,SPEED *,int ,FLOOR *);
+void move_obj(int,COORD2 *,SPEED *,int ,FLOOR *);
 void input_csv(FLOOR *,char *);
 void check_contact(COORD2 *,SPEED *,FLOOR *);
 int get_key_action(SPEED *,int *,FLOOR,COORD2);
