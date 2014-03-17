@@ -28,7 +28,7 @@ void action_bullet(BULLET *first){
 		}
 		p->crd.x += p->speed.x;
 		p->crd.y += p->speed.y;
-		DrawRotaGraph(p->crd.x,p->crd.y,1.0,0.0,p->handle,1,p->turnflag);
+		DrawRotaGraph(p->crd.x,p->crd.y,1.0,(-2*p->turnflag+1)*p->freq_cnt*0.2*p->type,p->handle,1,p->turnflag);
 		pp = p;
 		p = p->next;
 		if(pp->crd.x > SCREEN_WIDTH || pp->crd.x <= 0 || pp->crd.y > SCREEN_HIGHT) delete_bullet(pp);

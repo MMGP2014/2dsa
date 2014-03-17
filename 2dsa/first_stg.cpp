@@ -20,7 +20,7 @@ int first_stg(void){
 	int main_handle = LoadGraph(main_name);
 	char bullet_name[BULLET_NUM][1000];
 	sprintf_s(bullet_name[0],"%s%s",PIC,"bullet01.png");
-	sprintf_s(bullet_name[1],"%s%s",PIC,"bullet01.png");
+	sprintf_s(bullet_name[1],"%s%s",PIC,"bullet02.png");
 	int bullet_handle[BULLET_NUM];
 	bullet_handle[0] = LoadGraph(bullet_name[0]);
 	bullet_handle[1] = LoadGraph(bullet_name[1]);
@@ -51,7 +51,7 @@ int first_stg(void){
 				sprintf_s(tmp_char,"%s.png",flr_name);
 				floor[i][j].handle = LoadGraph(tmp_char);
 				sprintf_s(tmp_char,"%s.csv",flr_name);
-				input_csv(&floor[i][j],tmp_char);
+				input_floor_csv(&floor[i][j],tmp_char);
 			}
 		}
 	}
@@ -134,6 +134,7 @@ int get_key_action(SPEED *speed,int *turnflag,FLOOR floor,COORD2 crd,BULLET *bul
 		if(bullet_flag[0] == 0){
 
 			add_bullet(bullet_last);
+			bullet_last->pre->type = 0;
 			bullet_last->pre->handle = bullet_handle[0];
 			bullet_last->pre->turnflag = *turnflag ;
 			bullet_last->pre->crd = crd;
@@ -152,6 +153,7 @@ int get_key_action(SPEED *speed,int *turnflag,FLOOR floor,COORD2 crd,BULLET *bul
 	if(key[KEY_INPUT_X] >= 1){
 		if(bullet_flag[1] == 0){
 			add_bullet(bullet_last);
+			bullet_last->pre->type = 1;
 			bullet_last->pre->handle = bullet_handle[1];
 			bullet_last->pre->turnflag = *turnflag ;
 			bullet_last->pre->crd = crd;
@@ -168,7 +170,7 @@ int get_key_action(SPEED *speed,int *turnflag,FLOOR floor,COORD2 crd,BULLET *bul
 	return 0;
 }
 
-void input_csv(FLOOR *floor,char *fname){
+void input_floor_csv(FLOOR *floor,char *fname){
 	int x,y;
 	char buf[256];
 	FILE *fp;
