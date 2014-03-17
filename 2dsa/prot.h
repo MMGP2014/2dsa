@@ -77,13 +77,16 @@ typedef struct tble4{
 
 //prot
 //first_stg.cpp
+
 void move_obj(int ,COORD2 *,SPEED *,int );
 void input_floor_csv(FLOOR *,char *);
+
 void check_contact(COORD2 *,SPEED *,FLOOR *);
 int get_key_action(SPEED *,int *,FLOOR,COORD2,BULLET *,int *,int *);
 int key2int();
 int first_stg(void);
 int jump_before(COORD2,FLOOR);
+
 //fuction.cpp
 void print_char(char *);
 void print_int(int );
@@ -94,3 +97,4 @@ void delete_bullet(BULLET *);
 void action_bullet(BULLET *);
 //enemy.cpp
 void input_floor_enemy(FLOOR *,char *,ENEMY *);
+void file_in(ENEMY *,char *);

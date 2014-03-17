@@ -9,7 +9,7 @@
 int first_stg(void){
 	int i,j;
 	int turnflag=0;
-    	int cr;
+    int cr;
 	int col0=GetColor(255,0,0);
 	int col1=GetColor(0,255,0);
 	FLOOR floor[ FLOOR_NUM ][ FLOOR_NUM ];
@@ -17,6 +17,8 @@ int first_stg(void){
 	char flr_enemy_name[1000];
 	char tmp_char[1000];
 	char stage[]="STAGE1";
+	ENEMY ene[100];
+	char enetype_file[]=DATA "ENEMY\\enemy_type.csv";
 	char main_name[]=PIC MAIN_PIC;
 	int main_handle = LoadGraph(main_name);
 	char bullet_name[BULLET_NUM][1000];
@@ -33,26 +35,23 @@ int first_stg(void){
 	int bullet_flag[BULLET_NUM];
 	char music_name[]=MUSIC "boss_music.mp3";
 	PlaySoundFile(music_name,DX_PLAYTYPE_LOOP);
-	ENEMY ene[100];
-	ene[0].HP = 5;
-	ene[0].size.x  = 32;
-	ene[0].size.y  = 32;
-	ene[0].type  = 0;
-	ene[1].HP = 10;
-	ene[1].size.x  = 64;
-	ene[1].size.y  = 64;
-	ene[1].type  = 1;
 	for(i=0;i < BULLET_NUM; i++){
 		bullet_flag[i] = 0;
 	}
 
 	SPEED speed;
 	COORD2 crd,flr_crd;
+	
 
 	cr=GetColor(100,100,100);
-
+	
 	flr_crd.x=10; flr_crd.y=10;//‰ŠúƒtƒƒA10,10
 	speed.x=0; speed.y=0;
+    
+	file_in(ene,enetype_file);
+	/*ClearDrawScreen();
+	print_char(enetype_file);
+	ScreenFlip();*/
 
 	for(i=0;i<FLOOR_NUM;i++){
 		for(j=0;j<FLOOR_NUM;j++){
@@ -68,6 +67,7 @@ input_floor_enemy(&floor[i][j],flr_enemy_name,ene);
 			}
 		}
 	}
+
 	crd.x= BLOCK_SIZE * 2;
 	crd.y= BLOCK_SIZE * 2;
 
@@ -98,10 +98,13 @@ input_floor_enemy(&floor[i][j],flr_enemy_name,ene);
 	}
 	return 0;
 }
+
 void move_obj(int handle,COORD2 *crd,SPEED *speed,int turnflag){
 	crd->y +=  speed->y;
 	crd->x +=  speed->x;
+
 	DrawRotaGraph(crd->x,crd->y,EXTRATE,0.0,handle,1,turnflag);
+	
 }
 
 
