@@ -9,27 +9,49 @@
 int first_stg(void){
 	int i,j;
 	int turnflag=0;
-    	int cr;
+    int cr;
 	int col0=GetColor(255,0,0);
 	int col1=GetColor(0,255,0);
 	FLOOR floor[ FLOOR_NUM ][ FLOOR_NUM ];
 	char flr_name[1000];
 	char tmp_char[1000];
 	char stage[]="STAGE1";
-	char main_name[]=PIC "sin.png";
-	
+	ENEMY ene[100];
+	char enetype_file[]=DATA "ENEMY\\enemy_type.csv";
+	char main_name[]=PIC MAIN_PIC;
 	int main_handle = LoadGraph(main_name);
+	char bullet_name[BULLET_NUM][1000];
+	sprintf_s(bullet_name[0],"%s%s",PIC,"bullet01.png");
+	sprintf_s(bullet_name[1],"%s%s",PIC,"bullet02.png");
+	int bullet_handle[BULLET_NUM];
+	bullet_handle[0] = LoadGraph(bullet_name[0]);
+	bullet_handle[1] = LoadGraph(bullet_name[1]);
+	BULLET bullet_first,bullet_last;
+	bullet_first.next = &bullet_last;
+	bullet_first.pre = NULL;
+	bullet_last.next = NULL;
+	bullet_last.pre = &bullet_first;
+	int bullet_flag[BULLET_NUM];
+	char music_name[]=MUSIC "boss_music.mp3";
+	PlaySoundFile(music_name,DX_PLAYTYPE_LOOP);
+	for(i=0;i < BULLET_NUM; i++){
+		bullet_flag[i] = 0;
+	}
 
 	SPEED speed;
 	COORD2 crd,flr_crd;
+	
 
 	cr=GetColor(100,100,100);
 	
 	flr_crd.x=10; flr_crd.y=10;//初期フロア10,10
 	speed.x=0; speed.y=0;
     
+	file_in(ene,enetype_file);
+	/*ClearDrawScreen();
+	print_char(enetype_file);
+	ScreenFlip();*/
 
-	
 	for(i=0;i<FLOOR_NUM;i++){
 		for(j=0;j<FLOOR_NUM;j++){
 			if((i == 10) && (j == 10)){
@@ -37,7 +59,7 @@ int first_stg(void){
 				sprintf_s(tmp_char,"%s.png",flr_name);
 				floor[i][j].handle = LoadGraph(tmp_char);
 				sprintf_s(tmp_char,"%s.csv",flr_name);
-				input_csv(&floor[i][j],tmp_char);
+				input_floor_csv(&floor[i][j],tmp_char);
 			}
 		}
 	}
@@ -65,22 +87,24 @@ int first_stg(void){
 			}
 		}
 		*/
-		if(get_key_action(&speed,&turnflag,floor[flr_crd.x][flr_crd.y],crd))break;
+		if(get_key_action(&speed,&turnflag,floor[flr_crd.x][flr_crd.y],crd,&bullet_last,bullet_handle,bullet_flag)==1) break;
 		check_contact(&crd,&speed,&floor[flr_crd.x][flr_crd.y]);
-		move_obj(main_handle,&crd,&speed,turnflag,&floor[flr_crd.x][flr_crd.y]);
+		action_bullet(&bullet_first);
+		move_obj(main_handle,&crd,&speed,turnflag);
 	}
 	return 0;
 }
-void move_obj(int handle,COORD2 *crd,SPEED *speed,int turnflag,FLOOR *floor){
-	crd->y = crd->y + speed->y;
-	crd->x = crd->x + speed->x;
-	
+
+void move_obj(int handle,COORD2 *crd,SPEED *speed,int turnflag){
+	crd->y +=  speed->y;
+	crd->x +=  speed->x;
+
 	DrawRotaGraph(crd->x,crd->y,EXTRATE,0.0,handle,1,turnflag);
 	
 }
 
 
-int get_key_action(SPEED *speed,int *turnflag,FLOOR floor,COORD2 crd){
+int get_key_action(SPEED *speed,int *turnflag,FLOOR floor,COORD2 crd,BULLET *bullet_last,int bullet_handle[],int *bullet_flag){
 	/************************************************* 
 	/キー入力を読み取り、上下左右のスピードを計算する
 	/また移動方向によりキャラの向きも算出する
@@ -88,6 +112,9 @@ int get_key_action(SPEED *speed,int *turnflag,FLOOR floor,COORD2 crd){
 	 *************************************************/
 	char key[256];	
 	GetHitKeyStateAll( key ) ;
+
+	//エンターのキー入力(exit)
+        if(key[KEY_INPUT_RETURN] >= 1) return 1; 
 
 	//左右のキー入力
 	if(key[KEY_INPUT_LEFT] >= 1){
@@ -106,8 +133,6 @@ int get_key_action(SPEED *speed,int *turnflag,FLOOR floor,COORD2 crd){
 		speed->y = -20;
 	}
 
-	//エンターのキー入力(exit)
-        if(key[KEY_INPUT_RETURN] >= 1) return 1; 
 
 	//キャラクターの向き
 	if(speed->x < 0){
@@ -115,10 +140,49 @@ int get_key_action(SPEED *speed,int *turnflag,FLOOR floor,COORD2 crd){
 	} else if(speed->x > 0){
       		*turnflag = 0;
 	}
+
+	//攻撃タイプ0
+	if(key[KEY_INPUT_Z] >= 1){
+		if(bullet_flag[0] == 0){
+
+			add_bullet(bullet_last);
+			bullet_last->pre->type = 0;
+			bullet_last->pre->handle = bullet_handle[0];
+			bullet_last->pre->turnflag = *turnflag ;
+			bullet_last->pre->crd = crd;
+			bullet_last->pre->crd.x += (1 + (1 + (-2) * *turnflag ) * (BLOCK_SIZE+1))/2;
+			bullet_last->pre->speed.x = (1 + (-2) * *turnflag ) * BULLET0_SPEED_X;
+			bullet_last->pre->speed.y = BULLET0_SPEED_Y;
+			bullet_last->pre->accel.x = (1 + (-2) * *turnflag) * BULLET0_ACCEL_X;
+			bullet_last->pre->accel.y = BULLET0_ACCEL_Y;
+			bullet_last->pre->freq = BULLET0_ACCEL_FREQUENCY;
+			bullet_last->pre->freq_cnt = 0;
+			bullet_flag[0]++;
+		}
+	}else bullet_flag[0]=0;
+	
+		
+	if(key[KEY_INPUT_X] >= 1){
+		if(bullet_flag[1] == 0){
+			add_bullet(bullet_last);
+			bullet_last->pre->type = 1;
+			bullet_last->pre->handle = bullet_handle[1];
+			bullet_last->pre->turnflag = *turnflag ;
+			bullet_last->pre->crd = crd;
+			bullet_last->pre->crd.x += (1 + (1 + (-2) * *turnflag ) * (BLOCK_SIZE+1))/2;
+			bullet_last->pre->speed.x = (1 + (-2) * *turnflag ) * BULLET1_SPEED_X;
+			bullet_last->pre->speed.y = BULLET1_SPEED_Y;
+			bullet_last->pre->accel.x = (1 + (-2) * *turnflag) * BULLET1_ACCEL_X;
+			bullet_last->pre->accel.y = BULLET1_ACCEL_Y;
+			bullet_last->pre->freq = BULLET1_ACCEL_FREQUENCY;
+			bullet_last->pre->freq_cnt = 0;
+			bullet_flag[1]++;
+		}
+	}else bullet_flag[1]=0;
 	return 0;
 }
 
-void input_csv(FLOOR *floor,char *fname){
+void input_floor_csv(FLOOR *floor,char *fname){
 	int x,y;
 	char buf[256];
 	FILE *fp;
