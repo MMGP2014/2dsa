@@ -6,7 +6,7 @@ void print_char(char str[]){
 //if( DxLib_Init() == -1 ) return -1 ;
 	int Cr;
 	Cr = GetColor(0,0,0);
-	DrawString(SCREEN_WIDTH/2,SCREEN_HIGHT/2,str,Cr);
+	DrawString(0,SCREEN_HIGHT/2,str,Cr);
 }
 
 void print_int(int num){

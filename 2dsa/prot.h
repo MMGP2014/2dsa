@@ -45,7 +45,7 @@ typedef struct tble5{
 	COORD2 crd;
 	int freq;
 	int HP;
-	int exist;
+	COORD2 size;
 }ENEMY;
 
 typedef struct tble2{
@@ -92,3 +92,5 @@ void print_double(double );
 void add_bullet(BULLET *);
 void delete_bullet(BULLET *);
 void action_bullet(BULLET *);
+//enemy.cpp
+void input_floor_enemy(FLOOR *,char *,ENEMY *);

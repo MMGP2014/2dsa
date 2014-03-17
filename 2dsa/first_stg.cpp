@@ -14,6 +14,7 @@ int first_stg(void){
 	int col1=GetColor(0,255,0);
 	FLOOR floor[ FLOOR_NUM ][ FLOOR_NUM ];
 	char flr_name[1000];
+	char flr_enemy_name[1000];
 	char tmp_char[1000];
 	char stage[]="STAGE1";
 	char main_name[]=PIC MAIN_PIC;
@@ -32,6 +33,15 @@ int first_stg(void){
 	int bullet_flag[BULLET_NUM];
 	char music_name[]=MUSIC "boss_music.mp3";
 	PlaySoundFile(music_name,DX_PLAYTYPE_LOOP);
+	ENEMY ene[100];
+	ene[0].HP = 5;
+	ene[0].size.x  = 32;
+	ene[0].size.y  = 32;
+	ene[0].type  = 0;
+	ene[1].HP = 10;
+	ene[1].size.x  = 64;
+	ene[1].size.y  = 64;
+	ene[1].type  = 1;
 	for(i=0;i < BULLET_NUM; i++){
 		bullet_flag[i] = 0;
 	}
@@ -48,10 +58,13 @@ int first_stg(void){
 		for(j=0;j<FLOOR_NUM;j++){
 			if((i == 10) && (j == 10)){
 				sprintf_s(flr_name,"%s%s\\floor_%d_%d",DATA,stage,i,j);
+				sprintf_s(flr_name,"%s%s\\floor_%d_%d",DATA,stage,i,j);
 				sprintf_s(tmp_char,"%s.png",flr_name);
 				floor[i][j].handle = LoadGraph(tmp_char);
 				sprintf_s(tmp_char,"%s.csv",flr_name);
 				input_floor_csv(&floor[i][j],tmp_char);
+				sprintf_s(flr_enemy_name,"%s%s\\enemy_%d_%d.csv",DATA,stage,i,j);
+input_floor_enemy(&floor[i][j],flr_enemy_name,ene);
 			}
 		}
 	}
