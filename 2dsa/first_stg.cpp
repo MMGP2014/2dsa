@@ -95,6 +95,9 @@ input_floor_enemy(&floor[i][j],flr_enemy_name,ene);
 		check_contact(&crd,&speed,&floor[flr_crd.x][flr_crd.y]);
 		action_bullet(&bullet_first);
 		move_obj(main_handle,&crd,&speed,turnflag);
+		for(i=0;i<floor[flr_crd.x][flr_crd.y].enemy_num;i++){
+			DrawRotaGraph(floor[flr_crd.x][flr_crd.y].enemy[i].crd.x,floor[flr_crd.x][flr_crd.y].enemy[i].crd.y,1.0,0.0,floor[flr_crd.x][flr_crd.y].enemy[i].handle,0,0);	
+		}
 	}
 	return 0;
 }
