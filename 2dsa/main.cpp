@@ -6,7 +6,6 @@
 
 
 
-
 int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow )
 {
 	ChangeWindowMode(TRUE); // ウィンドウモードに設定
