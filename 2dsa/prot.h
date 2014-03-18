@@ -29,6 +29,9 @@
 #define BULLET1_ACCEL_Y 1
 #define BULLET1_ACCEL_FREQUENCY 2
 
+ //JUMP
+#define JUMP_NUM 1
+
   //enemy
 #define ENEMY_MAX 10
 #define ENEMY_TYPE_NUM 1
@@ -83,7 +86,7 @@ void move_obj(int ,COORD2 *,SPEED *,int );
 void input_floor_csv(FLOOR *,char *);
 
 void check_contact(COORD2 *,SPEED *,FLOOR *,COORD2 *);
-int get_key_action(SPEED *,int *,FLOOR,COORD2,BULLET *,int *,int *);
+int get_key_action(SPEED *,int *,FLOOR,COORD2,BULLET *,int *,int *,int *,int &);
 int key2int();
 int first_stg(void);
 int jump_before(COORD2,FLOOR);

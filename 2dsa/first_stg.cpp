@@ -7,11 +7,12 @@
 
 
 int first_stg(void){
-	int i,j;
+	int i,j,a;
 	int turnflag=0;
 	int cr=GetColor(100,100,100);
 	int col0=GetColor(255,0,0);
 	int col1=GetColor(0,255,0);
+	int jmp_times =0;
 	FLOOR floor[ FLOOR_NUM ][ FLOOR_NUM ];
 	char flr_name[1000];
 	char flr_enemy_name[1000];
@@ -33,17 +34,20 @@ int first_stg(void){
 	bullet_last.next = NULL;
 	bullet_last.pre = &bullet_first;
 	int bullet_flag[BULLET_NUM];
+	int jump_flag[JUMP_NUM];
 	char music_name[]=MUSIC "boss_music.mp3";
 	PlaySoundFile(music_name,DX_PLAYTYPE_LOOP);
 	for(i=0;i < BULLET_NUM; i++){
 		bullet_flag[i] = 0;
 	}
-
 	SPEED speed={0,0};
 	COORD2 size={BLOCK_SIZE,BLOCK_SIZE};
 	COORD2 crd={100,100};
 	COORD2 flr_crd_pre={0,0};
 	COORD2 flr_crd={10,10};//初期フロア10,10
+	for(a=0;a<JUMP_NUM;a++){
+		jump_flag[a] = 0;
+	}
 	
 	
 	file_in(ene,enetype_file);
@@ -76,7 +80,7 @@ int first_stg(void){
 			sprintf_s(flr_enemy_name,"%s%s\\enemy_%d_%d.csv",DATA,stage,flr_crd.x,flr_crd.y);
 			input_floor_enemy(&floor[flr_crd.x][flr_crd.y],flr_enemy_name,ene);
 		}
-		if(get_key_action(&speed,&turnflag,floor[flr_crd.x][flr_crd.y],crd,&bullet_last,bullet_handle,bullet_flag)==1) break;
+		if(get_key_action(&speed,&turnflag,floor[flr_crd.x][flr_crd.y],crd,&bullet_last,bullet_handle,bullet_flag,jump_flag,jmp_times)==1) break;
 		check_contact(&crd,&speed,&floor[flr_crd.x][flr_crd.y],&size);
 		action_bullet(&bullet_first);
 		move_obj(main_handle,&crd,&speed,turnflag);
@@ -96,7 +100,7 @@ void move_obj(int handle,COORD2 *crd,SPEED *speed,int turnflag){
 }
 
 
-int get_key_action(SPEED *speed,int *turnflag,FLOOR floor,COORD2 crd,BULLET *bullet_last,int bullet_handle[],int *bullet_flag){
+int get_key_action(SPEED *speed,int *turnflag,FLOOR floor,COORD2 crd,BULLET *bullet_last,int bullet_handle[],int *bullet_flag,int *jump_flag,int &jmp_times){
 	/************************************************* 
 	/キー入力を読み取り、上下左右のスピードを計算する
 	/また移動方向によりキャラの向きも算出する
@@ -104,6 +108,8 @@ int get_key_action(SPEED *speed,int *turnflag,FLOOR floor,COORD2 crd,BULLET *bul
 	 *************************************************/
 	char key[256];	
 	GetHitKeyStateAll( key ) ;
+
+
 
 	//エンターのキー入力(exit)
         if(key[KEY_INPUT_RETURN] >= 1) return 1; 
@@ -118,14 +124,47 @@ int get_key_action(SPEED *speed,int *turnflag,FLOOR floor,COORD2 crd,BULLET *bul
        	}
 
 	//上下のキー入力
-	if(speed->y < 5) speed->y+=2;
+	if(speed->y < 5) speed->y+=5;
+
+	/*while(ProcessMessage() == 0&&jump_before(crd,floor)==0&&key[KEY_INPUT_UP] == 1 && jmp_times==1){
+		print_int(jmp_times);
+		speed ->y = -30;
+	}*/	
 	if(key[KEY_INPUT_DOWN] >= 1){
 		speed->y += 3;
-	}else if(key[KEY_INPUT_SPACE] >= 1 && jump_before(crd,floor)==1){
-		speed->y = -20;
+		
+	}else if((key[KEY_INPUT_UP] >=1 || key[KEY_INPUT_SPACE] == 1)&& jump_before(crd,floor)==1){
+		speed ->y=-35;
+		
+	}		
+	if(jump_before(crd,floor)==0&&(key[KEY_INPUT_UP]==1 || key[KEY_INPUT_SPACE] >= 1) && jmp_times==0){
+		speed->y = -35;
+		jmp_times=1;
+		/*jump_flag[0]=1;
+		if((key[KEY_INPUT_UP]==1 || key[KEY_INPUT_SPACE] >= 1)&&jump_flag[0]==1)	
+		speed->y = -35;
+		jmp_times++;
+	}else if(jump_flag[0] =0){
+	return 0*/
 	}
+		
+	print_int(jmp_times);
+		if(jump_before(crd,floor)==1){
+		jmp_times = 0;
+		
+		}
+
+	/*else if(key[KEY_INPUT_UP] >= 1 &&key[KEY_INPUT_SPACE]&& jump_before(crd,floor)==0){
+		jmp_times++;
+		while(jmp_times <= 1){
+			speed ->y = -20;
+		break;
+		}
+		return 0;
+	}*/
 
 
+	
 	//キャラクターの向き
 	if(speed->x < 0){
 		*turnflag = 1;
@@ -241,18 +280,23 @@ void check_contact(COORD2 *crd,SPEED *speed,FLOOR *floor,COORD2 *size){
 
 int jump_before(COORD2 crd,FLOOR floor){
 
+
 	int block_pyd;
 	int block_pxr;
 	int block_pxl;
 
-
 	block_pyd = (crd.y + (BLOCK_SIZE / 2) ) / BLOCK_SIZE;
 	block_pxr = (crd.x + (BLOCK_SIZE / 2)  -1) / BLOCK_SIZE;
 	block_pxl = (crd.x - (BLOCK_SIZE / 2)  ) / BLOCK_SIZE;
-
-	if(floor.block[block_pxl][block_pyd]==0&&floor.block[block_pxr][block_pyd] ==0){
+ 	
+	
+	
+	
+	if(floor.block[block_pxl][block_pyd]==1||floor.block[block_pxr][block_pyd] ==1){
+		return 1;
+	}else if(floor.block[block_pxl][block_pyd]==0||floor.block[block_pxr][block_pyd] ==0){
 		return 0;
 	}
-
-	return 1;
+	return 0;
 }
+
