@@ -137,18 +137,15 @@ int get_key_action(SPEED *speed,int *turnflag,FLOOR floor,COORD2 crd,BULLET *bul
 		speed ->y=-35;
 		
 	}		
-	if(jump_before(crd,floor,size)==0&&(key[KEY_INPUT_UP]==1 || key[KEY_INPUT_SPACE] >= 1) && jmp_times==0){
-		speed->y = -35;
-		jmp_times=1;
-		/*jump_flag[0]=1;
-		if((key[KEY_INPUT_UP]==1 || key[KEY_INPUT_SPACE] >= 1)&&jump_flag[0]==1)	
+	if(jump_before(crd,floor,size)==0&&(key[KEY_INPUT_UP]==1 || key[KEY_INPUT_SPACE] >= 1) && jmp_times<=0&&jump_flag[0]==0){
 		speed->y = -35;
 		jmp_times++;
-	}else if(jump_flag[0] =0){
-	return 0*/
+	}if((key[KEY_INPUT_UP]==1 || key[KEY_INPUT_SPACE] >= 1)){
+		jump_flag[0]=1;
+		}
+	else{
+		jump_flag[0] =0;
 	}
-		
-	print_int(jmp_times);
 		if(jump_before(crd,floor,size)==1){
 		jmp_times = 0;
 		
