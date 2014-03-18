@@ -80,7 +80,7 @@ int first_stg(void){
 			sprintf_s(flr_enemy_name,"%s%s\\enemy_%d_%d.csv",DATA,stage,flr_crd.x,flr_crd.y);
 			input_floor_enemy(&floor[flr_crd.x][flr_crd.y],flr_enemy_name,ene);
 		}
-		if(get_key_action(&speed,&turnflag,floor[flr_crd.x][flr_crd.y],crd,&bullet_last,bullet_handle,bullet_flag,jump_flag,jmp_times)==1) break;
+		if(get_key_action(&speed,&turnflag,floor[flr_crd.x][flr_crd.y],crd,&bullet_last,bullet_handle,bullet_flag,jump_flag,jmp_times,&size)==1) break;
 		check_contact(&crd,&speed,&floor[flr_crd.x][flr_crd.y],&size);
 		action_bullet(&bullet_first);
 		move_obj(main_handle,&crd,&speed,turnflag);
@@ -100,7 +100,7 @@ void move_obj(int handle,COORD2 *crd,SPEED *speed,int turnflag){
 }
 
 
-int get_key_action(SPEED *speed,int *turnflag,FLOOR floor,COORD2 crd,BULLET *bullet_last,int bullet_handle[],int *bullet_flag,int *jump_flag,int &jmp_times){
+int get_key_action(SPEED *speed,int *turnflag,FLOOR floor,COORD2 crd,BULLET *bullet_last,int bullet_handle[],int *bullet_flag,int *jump_flag,int &jmp_times,COORD2 *size){
 	/************************************************* 
 	/キー入力を読み取り、上下左右のスピードを計算する
 	/また移動方向によりキャラの向きも算出する
@@ -126,18 +126,18 @@ int get_key_action(SPEED *speed,int *turnflag,FLOOR floor,COORD2 crd,BULLET *bul
 	//上下のキー入力
 	if(speed->y < 5) speed->y+=5;
 
-	/*while(ProcessMessage() == 0&&jump_before(crd,floor)==0&&key[KEY_INPUT_UP] == 1 && jmp_times==1){
+	/*while(ProcessMessage() == 0&&jump_before(crd,floor,size)==0&&key[KEY_INPUT_UP] == 1 && jmp_times==1){
 		print_int(jmp_times);
 		speed ->y = -30;
 	}*/	
 	if(key[KEY_INPUT_DOWN] >= 1){
 		speed->y += 3;
 		
-	}else if((key[KEY_INPUT_UP] >=1 || key[KEY_INPUT_SPACE] == 1)&& jump_before(crd,floor)==1){
+	}else if((key[KEY_INPUT_UP] >=1 || key[KEY_INPUT_SPACE] == 1)&& jump_before(crd,floor,size)==1){
 		speed ->y=-35;
 		
 	}		
-	if(jump_before(crd,floor)==0&&(key[KEY_INPUT_UP]==1 || key[KEY_INPUT_SPACE] >= 1) && jmp_times==0){
+	if(jump_before(crd,floor,size)==0&&(key[KEY_INPUT_UP]==1 || key[KEY_INPUT_SPACE] >= 1) && jmp_times==0){
 		speed->y = -35;
 		jmp_times=1;
 		/*jump_flag[0]=1;
@@ -149,12 +149,12 @@ int get_key_action(SPEED *speed,int *turnflag,FLOOR floor,COORD2 crd,BULLET *bul
 	}
 		
 	print_int(jmp_times);
-		if(jump_before(crd,floor)==1){
+		if(jump_before(crd,floor,size)==1){
 		jmp_times = 0;
 		
 		}
 
-	/*else if(key[KEY_INPUT_UP] >= 1 &&key[KEY_INPUT_SPACE]&& jump_before(crd,floor)==0){
+	/*else if(key[KEY_INPUT_UP] >= 1 &&key[KEY_INPUT_SPACE]&& jump_before(crd,floor,size)==0){
 		jmp_times++;
 		while(jmp_times <= 1){
 			speed ->y = -20;
@@ -278,24 +278,20 @@ void check_contact(COORD2 *crd,SPEED *speed,FLOOR *floor,COORD2 *size){
 }
 
 
-int jump_before(COORD2 crd,FLOOR floor){
+int jump_before(COORD2 crd,FLOOR floor,COORD2 *size){
 
 
 	int block_pyd;
 	int block_pxr;
 	int block_pxl;
+	int i;
 
-	block_pyd = (crd.y + (BLOCK_SIZE / 2) ) / BLOCK_SIZE;
-	block_pxr = (crd.x + (BLOCK_SIZE / 2)  -1) / BLOCK_SIZE;
-	block_pxl = (crd.x - (BLOCK_SIZE / 2)  ) / BLOCK_SIZE;
+	block_pyd = (crd.y + (size->y / 2) ) / BLOCK_SIZE;
+	block_pxr = (crd.x + (size->x / 2)  -1) / BLOCK_SIZE;
+	block_pxl = (crd.x - (size->x / 2)  ) / BLOCK_SIZE;
  	
-	
-	
-	
-	if(floor.block[block_pxl][block_pyd]==1||floor.block[block_pxr][block_pyd] ==1){
-		return 1;
-	}else if(floor.block[block_pxl][block_pyd]==0||floor.block[block_pxr][block_pyd] ==0){
-		return 0;
+	for(i = block_pxl ; i <= block_pxr;i++){
+		if(floor.block[i][block_pyd]==1) return 1;
 	}
 	return 0;
 }

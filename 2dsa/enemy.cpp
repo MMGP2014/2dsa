@@ -12,7 +12,7 @@ void input_floor_enemy(FLOOR *flr,char *fname,ENEMY *ene){
 	while(fgets(buf,256,fp) != NULL){
 		cnt++;
 		if(cnt == -1) continue;
-		sscanf_s(buf,"%d,%d,%d",&flr->enemy[cnt].type,&flr->enemy[cnt].crd.x,&flr->enemy[cnt].crd.y);
+		sscanf_s(buf,"%d,%d,%d,%d",&flr->enemy[cnt].type,&flr->enemy[cnt].crd.x,&flr->enemy[cnt].crd.y,&flr->enemy[cnt].cnt);
 		flr->enemy[cnt].HP=(ene+flr->enemy[cnt].type)->HP;
 		flr->enemy[cnt].size=(ene+flr->enemy[cnt].type)->size;
 		flr->enemy[cnt].speed=(ene+flr->enemy[cnt].type)->speed;
@@ -66,17 +66,20 @@ void behaive_enemy(FLOOR *flr,ENEMY *enemy){
 			enemy->crd.y += enemy->speed.y;
 			break;
 		case 1: 
-			if(enemy->speed.y == 0) enemy->speed.y = -1;
-			if(enemy->cnt==120){
-				enemy->speed.y = 13;
-				enemy->cnt=0;
+			if(enemy->speed.y == 0 && enemy->cnt > 120){
+			       	enemy->speed.y = -1;
+				enemy->cnt =0;
 			}
+			if(enemy->cnt==120) enemy->speed.y = 13;
 			enemy->cnt++;
 			check_contact(&enemy->crd,&enemy->speed,flr,&enemy->size);
 			enemy->crd.x += enemy->speed.x;
 			enemy->crd.y += enemy->speed.y;
 			break;
-		case 2: enemy->crd.x += enemy->speed.x;
+		case 2: 
+			enemy->speed.y += 1;
+			check_contact(&enemy->crd,&enemy->speed,flr,&enemy->size);
+			enemy->crd.x += enemy->speed.x;
 			enemy->crd.y += enemy->speed.y;
 			break;
 	}
