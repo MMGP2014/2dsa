@@ -9,7 +9,7 @@
 int first_stg(void){
 	int i,j;
 	int turnflag=0;
-    int cr;
+	int cr;
 	int col0=GetColor(255,0,0);
 	int col1=GetColor(0,255,0);
 	FLOOR floor[ FLOOR_NUM ][ FLOOR_NUM ];
@@ -107,7 +107,6 @@ void move_obj(int handle,COORD2 *crd,SPEED *speed,int turnflag){
 	crd->x +=  speed->x;
 
 	DrawRotaGraph(crd->x,crd->y,EXTRATE,0.0,handle,1,turnflag);
-	
 }
 
 
