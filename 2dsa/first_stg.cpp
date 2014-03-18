@@ -9,7 +9,7 @@
 int first_stg(void){
 	int i,j,a;
 	int turnflag=0;
-    int cr;
+	int cr;
 	int col0=GetColor(255,0,0);
 	int col1=GetColor(0,255,0);
 	int jmp_times =0;
@@ -99,6 +99,9 @@ input_floor_enemy(&floor[i][j],flr_enemy_name,ene);
 		check_contact(&crd,&speed,&floor[flr_crd.x][flr_crd.y]);
 		action_bullet(&bullet_first);
 		move_obj(main_handle,&crd,&speed,turnflag);
+		for(i=0;i<floor[flr_crd.x][flr_crd.y].enemy_num;i++){
+			DrawRotaGraph(floor[flr_crd.x][flr_crd.y].enemy[i].crd.x,floor[flr_crd.x][flr_crd.y].enemy[i].crd.y,1.0,0.0,floor[flr_crd.x][flr_crd.y].enemy[i].handle,0,0);	
+		}
 	}
 	return 0;
 }
@@ -108,7 +111,6 @@ void move_obj(int handle,COORD2 *crd,SPEED *speed,int turnflag){
 	crd->x +=  speed->x;
 
 	DrawRotaGraph(crd->x,crd->y,EXTRATE,0.0,handle,1,turnflag);
-	
 }
 
 

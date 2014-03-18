@@ -41,11 +41,8 @@ void file_in(ENEMY *ene,char *file){
 		i++;
 			
 
-	if(i<=1){	
-		continue;	
-		
-	}
-	sscanf_s(s,"%d,%d,%d,&d",&(ene+i-2)->type,&(ene+i-2)->size.x,&(ene+i-2)->size.y,&(ene+i-2)->HP);	
+	if(i<=1) continue;	
+	sscanf_s(s,"%d,%d,%d,%d",&(ene+i-2)->type,&(ene+i-2)->size.x,&(ene+i-2)->size.y,&(ene+i-2)->HP);	
 	sprintf_s(file_name,"%senemy_type%d.png",PIC,(ene+i-2)->type);
 	(ene+i-2)->handle = LoadGraph(file_name);
 	
@@ -58,8 +55,5 @@ void file_in(ENEMY *ene,char *file){
 */
 	
 	}
-	
-
 	fclose(fp);
-	
 }
