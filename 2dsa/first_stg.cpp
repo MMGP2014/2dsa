@@ -9,7 +9,7 @@
 int first_stg(void){
 	int i,j;
 	int turnflag=0;
-	int cr;
+	int cr=GetColor(100,100,100);
 	int col0=GetColor(255,0,0);
 	int col1=GetColor(0,255,0);
 	FLOOR floor[ FLOOR_NUM ][ FLOOR_NUM ];
@@ -39,15 +39,13 @@ int first_stg(void){
 		bullet_flag[i] = 0;
 	}
 
-	SPEED speed;
-	COORD2 crd,flr_crd;
+	SPEED speed={0,0};
+	COORD2 size={BLOCK_SIZE,BLOCK_SIZE};
+	COORD2 crd={100,100};
+	COORD2 flr_crd_pre={0,0};
+	COORD2 flr_crd={10,10};//初期フロア10,10
 	
-
-	cr=GetColor(100,100,100);
 	
-	flr_crd.x=10; flr_crd.y=10;//初期フロア10,10
-	speed.x=0; speed.y=0;
-    
 	file_in(ene,enetype_file);
 	/*ClearDrawScreen();
 	print_char(enetype_file);
@@ -62,14 +60,9 @@ int first_stg(void){
 				floor[i][j].handle = LoadGraph(tmp_char);
 				sprintf_s(tmp_char,"%s.csv",flr_name);
 				input_floor_csv(&floor[i][j],tmp_char);
-				sprintf_s(flr_enemy_name,"%s%s\\enemy_%d_%d.csv",DATA,stage,i,j);
-input_floor_enemy(&floor[i][j],flr_enemy_name,ene);
 			}
 		}
 	}
-
-	crd.x= BLOCK_SIZE * 2;
-	crd.y= BLOCK_SIZE * 2;
 
 	while( ProcessMessage() == 0){
 		ScreenFlip();
@@ -77,26 +70,19 @@ input_floor_enemy(&floor[i][j],flr_enemy_name,ene);
 
 		DrawGraph(0,0,floor[flr_crd.x][flr_crd.y].handle,0);
 		DrawString(540,0,"END:[ENTER]",cr);
-		//print_char(tmp_char);
-		//print_int(flr_crd.x);
-		//print_int(flr_crd.y);
-		/*
-		for(i=1;i<=640;i++){
-			for(j=1;j<=480;j++){
-				if(floor[flr_crd.x][flr_crd.y] == 1){
-				       	DrawPixel(i,j,col1);
-				}else if(floor[flr_crd.x][flr_crd.y] == 0 ){
-				       	DrawPixel(i,j,col0);
-				}
-			}
+		if(flr_crd.x != flr_crd_pre.x || flr_crd.y != flr_crd_pre.y){
+			flr_crd_pre.x = flr_crd.x;
+			flr_crd_pre.y = flr_crd.y;
+			sprintf_s(flr_enemy_name,"%s%s\\enemy_%d_%d.csv",DATA,stage,flr_crd.x,flr_crd.y);
+			input_floor_enemy(&floor[flr_crd.x][flr_crd.y],flr_enemy_name,ene);
 		}
-		*/
 		if(get_key_action(&speed,&turnflag,floor[flr_crd.x][flr_crd.y],crd,&bullet_last,bullet_handle,bullet_flag)==1) break;
-		check_contact(&crd,&speed,&floor[flr_crd.x][flr_crd.y]);
+		check_contact(&crd,&speed,&floor[flr_crd.x][flr_crd.y],&size);
 		action_bullet(&bullet_first);
 		move_obj(main_handle,&crd,&speed,turnflag);
 		for(i=0;i<floor[flr_crd.x][flr_crd.y].enemy_num;i++){
-			DrawRotaGraph(floor[flr_crd.x][flr_crd.y].enemy[i].crd.x,floor[flr_crd.x][flr_crd.y].enemy[i].crd.y,1.0,0.0,floor[flr_crd.x][flr_crd.y].enemy[i].handle,0,0);	
+			behaive_enemy(&floor[flr_crd.x][flr_crd.y],&floor[flr_crd.x][flr_crd.y].enemy[i]);
+			DrawRotaGraph(floor[flr_crd.x][flr_crd.y].enemy[i].crd.x,floor[flr_crd.x][flr_crd.y].enemy[i].crd.y,1.0,0.0,floor[flr_crd.x][flr_crd.y].enemy[i].handle,1,0);	
 		}
 	}
 	return 0;
@@ -202,38 +188,56 @@ void input_floor_csv(FLOOR *floor,char *fname){
 	fclose(fp);
 }
 
-void check_contact(COORD2 *crd,SPEED *speed,FLOOR *floor){
+void check_contact(COORD2 *crd,SPEED *speed,FLOOR *floor,COORD2 *size){
 	int block_pxl;
 	int block_pxr;
 	int block_pyu;
 	int block_pyd;
 
-	block_pyd = (crd->y + (BLOCK_SIZE / 2)  - 1) / BLOCK_SIZE;
-	block_pyu = (crd->y - (BLOCK_SIZE / 2)) / BLOCK_SIZE;
+	int i,flag;
+	block_pyd = (crd->y + (size->y / 2)  - 1) / BLOCK_SIZE;
+	block_pyu = (crd->y - (size->y / 2)) / BLOCK_SIZE;
 	while(speed->x > 0){
-		block_pxr = (crd->x + (BLOCK_SIZE / 2) + speed->x - 1) / BLOCK_SIZE;
-		if((floor->block[block_pxr][block_pyu] == 0) && (floor->block[block_pxr][block_pyd] == 0)) break;
+		block_pxr = (crd->x + (size->x / 2) + speed->x - 1) / BLOCK_SIZE;
+		flag=0;
+		for(i = block_pyu; i <= block_pyd ;i++){
+			if(floor->block[block_pxr][i] == 1) flag=1;
+		}
+		if(flag == 0) break;
 		speed->x--;
 	}
 	while(speed->x < 0){
-		block_pxl = (crd->x - (BLOCK_SIZE / 2) + speed->x ) / BLOCK_SIZE;
-		if((floor->block[block_pxl][block_pyu] == 0) && (floor->block[block_pxl][block_pyd] == 0)) break;
+		block_pxl = (crd->x - (size->x / 2) + speed->x ) / BLOCK_SIZE;
+		flag=0;
+		for(i = block_pyu; i <= block_pyd ;i++){
+			if(floor->block[block_pxl][i] == 1) flag=1;
+		}
+		if(flag == 0) break;
 		speed->x++;
 	}
 
-	block_pxr = (crd->x + (BLOCK_SIZE / 2) + speed->x - 1) / BLOCK_SIZE;
-	block_pxl = (crd->x - (BLOCK_SIZE / 2) + speed->x ) / BLOCK_SIZE;
+	block_pxr = (crd->x + (size->x / 2) + speed->x - 1) / BLOCK_SIZE;
+	block_pxl = (crd->x - (size->x / 2) + speed->x ) / BLOCK_SIZE;
 	while(speed->y > 0){
-		block_pyd = (crd->y + (BLOCK_SIZE / 2) + speed->y - 1 ) / BLOCK_SIZE;
-		if((floor->block[block_pxr][block_pyd] == 0) && (floor->block[block_pxl][block_pyd] == 0)) break;
+		block_pyd = (crd->y + (size->y / 2) + speed->y - 1 ) / BLOCK_SIZE;
+		flag=0;
+		for(i = block_pxl; i <= block_pxr ;i++){
+			if(floor->block[i][block_pyd] == 1) flag=1;
+		}
+		if(flag == 0) break;
 		speed->y--;
 	}
 	while(speed->y < 0){
-		block_pyu = (crd->y - (BLOCK_SIZE / 2) + speed->y ) / BLOCK_SIZE;
-		if((floor->block[block_pxr][block_pyu] == 0) && (floor->block[block_pxl][block_pyu] == 0)) break;
+		block_pyu = (crd->y - (size->y / 2) + speed->y ) / BLOCK_SIZE;
+		flag=0;
+		for(i = block_pxl; i <= block_pxr ;i++){
+			if(floor->block[i][block_pyu] == 1) flag=1;
+		}
+		if(flag == 0) break;
 		speed->y++;
 	}
 }
+
 
 int jump_before(COORD2 crd,FLOOR floor){
 

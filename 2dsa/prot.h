@@ -38,29 +38,30 @@ typedef struct tble1{
 	int y;
 }COORD2;
 
-typedef struct tble5{
+typedef struct tble2{
+	int x;
+	int y;
+}SPEED;
+
+typedef struct tble3{
 	int type;
 	int handle;
 	int turnflag;
 	COORD2 crd;
-	int freq;
+	SPEED speed;
+	int cnt;
 	int HP;
 	COORD2 size;
 }ENEMY;
 
-typedef struct tble2{
+typedef struct tble4{
 	int handle;
 	int block[ BLOCK_NUM_W ][ BLOCK_NUM_H ];
 	int enemy_num;
 	ENEMY enemy[ENEMY_MAX];
 }FLOOR;
 
-typedef struct tble3{
-	int x;
-	int y;
-}SPEED;
-
-typedef struct tble4{
+typedef struct tble5{
 	int type;
 	int handle;
 	int turnflag;
@@ -70,8 +71,8 @@ typedef struct tble4{
 	SPEED accel;
 	int freq;
 	int freq_cnt;
-	struct tble4 *next;
-	struct tble4 *pre;
+	struct tble5 *next;
+	struct tble5 *pre;
 }BULLET;
 
 
@@ -81,7 +82,7 @@ typedef struct tble4{
 void move_obj(int ,COORD2 *,SPEED *,int );
 void input_floor_csv(FLOOR *,char *);
 
-void check_contact(COORD2 *,SPEED *,FLOOR *);
+void check_contact(COORD2 *,SPEED *,FLOOR *,COORD2 *);
 int get_key_action(SPEED *,int *,FLOOR,COORD2,BULLET *,int *,int *);
 int key2int();
 int first_stg(void);
@@ -98,3 +99,4 @@ void action_bullet(BULLET *);
 //enemy.cpp
 void input_floor_enemy(FLOOR *,char *,ENEMY *);
 void file_in(ENEMY *,char *);
+void behaive_enemy(FLOOR *,ENEMY *);

@@ -15,6 +15,7 @@ void input_floor_enemy(FLOOR *flr,char *fname,ENEMY *ene){
 		sscanf_s(buf,"%d,%d,%d",&flr->enemy[cnt].type,&flr->enemy[cnt].crd.x,&flr->enemy[cnt].crd.y);
 		flr->enemy[cnt].HP=(ene+flr->enemy[cnt].type)->HP;
 		flr->enemy[cnt].size=(ene+flr->enemy[cnt].type)->size;
+		flr->enemy[cnt].speed=(ene+flr->enemy[cnt].type)->speed;
 		flr->enemy[cnt].handle=(ene+flr->enemy[cnt].type)->handle;
 	}
 	cnt++;
@@ -42,9 +43,10 @@ void file_in(ENEMY *ene,char *file){
 			
 
 	if(i<=1) continue;	
-	sscanf_s(s,"%d,%d,%d,%d",&(ene+i-2)->type,&(ene+i-2)->size.x,&(ene+i-2)->size.y,&(ene+i-2)->HP);	
+	sscanf_s(s,"%d,%d,%d,%d,%d,%d",&(ene+i-2)->type,&(ene+i-2)->size.x,&(ene+i-2)->size.y,&(ene+i-2)->HP,&(ene+i-2)->speed.x,&(ene+i-2)->speed.y);	
 	sprintf_s(file_name,"%senemy_type%d.png",PIC,(ene+i-2)->type);
 	(ene+i-2)->handle = LoadGraph(file_name);
+	(ene+i-2)->cnt = 0;
 	
 	/*ClearDrawScreen();
 		print_char(s);
@@ -56,4 +58,26 @@ void file_in(ENEMY *ene,char *file){
 	
 	}
 	fclose(fp);
+}
+
+void behaive_enemy(FLOOR *flr,ENEMY *enemy){
+	switch(enemy->type){
+		case 0: enemy->crd.x += enemy->speed.x;
+			enemy->crd.y += enemy->speed.y;
+			break;
+		case 1: 
+			if(enemy->speed.y == 0) enemy->speed.y = -1;
+			if(enemy->cnt==120){
+				enemy->speed.y = 13;
+				enemy->cnt=0;
+			}
+			enemy->cnt++;
+			check_contact(&enemy->crd,&enemy->speed,flr,&enemy->size);
+			enemy->crd.x += enemy->speed.x;
+			enemy->crd.y += enemy->speed.y;
+			break;
+		case 2: enemy->crd.x += enemy->speed.x;
+			enemy->crd.y += enemy->speed.y;
+			break;
+	}
 }

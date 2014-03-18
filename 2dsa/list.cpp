@@ -18,6 +18,7 @@ void delete_bullet(BULLET *corrent){
 	corrent->next->pre = corrent->pre;
 	free(corrent);
 }
+
 void action_bullet(BULLET *first){
 	BULLET *p = first->next;
 	BULLET *pp;
