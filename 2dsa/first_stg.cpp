@@ -82,11 +82,14 @@ int first_stg(void){
 		}
 		if(get_key_action(&speed,&turnflag,floor[flr_crd.x][flr_crd.y],crd,&bullet_last,bullet_handle,bullet_flag,jump_flag,jmp_times,&size)==1) break;
 		check_contact(&crd,&speed,&floor[flr_crd.x][flr_crd.y],&size);
-		action_bullet(&bullet_first);
 		move_obj(main_handle,&crd,&speed,turnflag);
 		for(i=0;i<floor[flr_crd.x][flr_crd.y].enemy_num;i++){
 			behaive_enemy(&floor[flr_crd.x][flr_crd.y],&floor[flr_crd.x][flr_crd.y].enemy[i]);
-			DrawRotaGraph(floor[flr_crd.x][flr_crd.y].enemy[i].crd.x,floor[flr_crd.x][flr_crd.y].enemy[i].crd.y,1.0,0.0,floor[flr_crd.x][flr_crd.y].enemy[i].handle,1,0);	
+		}
+		action_bullet(&bullet_first,&floor[flr_crd.x][flr_crd.y]);
+		for(i=0;i<floor[flr_crd.x][flr_crd.y].enemy_num;i++){
+			if(floor[flr_crd.x][flr_crd.y].enemy[i].HP <= 0) continue;
+			DrawRotaGraph(floor[flr_crd.x][flr_crd.y].enemy[i].crd.x,floor[flr_crd.x][flr_crd.y].enemy[i].crd.y,1.0,0.0,floor[flr_crd.x][flr_crd.y].enemy[i].handle,0,0);	
 		}
 	}
 	return 0;
@@ -184,6 +187,8 @@ int get_key_action(SPEED *speed,int *turnflag,FLOOR floor,COORD2 crd,BULLET *bul
 			bullet_last->pre->accel.x = (1 + (-2) * *turnflag) * BULLET0_ACCEL_X;
 			bullet_last->pre->accel.y = BULLET0_ACCEL_Y;
 			bullet_last->pre->freq = BULLET0_ACCEL_FREQUENCY;
+			bullet_last->pre->damage = BULLET0_DAMAGE;
+			bullet_last->pre->size = BULLET0_SIZE;
 			bullet_last->pre->freq_cnt = 0;
 			bullet_flag[0]++;
 		}
@@ -203,6 +208,8 @@ int get_key_action(SPEED *speed,int *turnflag,FLOOR floor,COORD2 crd,BULLET *bul
 			bullet_last->pre->accel.x = (1 + (-2) * *turnflag) * BULLET1_ACCEL_X;
 			bullet_last->pre->accel.y = BULLET1_ACCEL_Y;
 			bullet_last->pre->freq = BULLET1_ACCEL_FREQUENCY;
+			bullet_last->pre->damage = BULLET1_DAMAGE;
+			bullet_last->pre->size = BULLET1_SIZE;
 			bullet_last->pre->freq_cnt = 0;
 			bullet_flag[1]++;
 		}

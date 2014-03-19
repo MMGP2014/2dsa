@@ -14,6 +14,7 @@
 #define FLOOR_NUM 20
 #define LR_SPEED 4
 #define EXTRATE ((double)BLOCK_SIZE / (double)OB_PIC_SIZE)
+#define PI 3.1415926
 
   //BULLET èÓïÒ
 #define BULLET_NUM 2
@@ -23,11 +24,15 @@
 #define BULLET0_ACCEL_X 0
 #define BULLET0_ACCEL_Y 0
 #define BULLET0_ACCEL_FREQUENCY 1
+#define BULLET0_DAMAGE 2
+#define BULLET0_SIZE 10
 #define BULLET1_SPEED_X 7
 #define BULLET1_SPEED_Y -10
 #define BULLET1_ACCEL_X 0
 #define BULLET1_ACCEL_Y 1
 #define BULLET1_ACCEL_FREQUENCY 2
+#define BULLET1_DAMAGE 3
+#define BULLET1_SIZE 15
 
  //JUMP
 #define JUMP_NUM 1
@@ -35,6 +40,9 @@
   //enemy
 #define ENEMY_MAX 10
 #define ENEMY_TYPE_NUM 1
+#define ENE0_MOVE_RANGE 70
+#define ENE0_ROT_SPEED 1.5
+#define ENE1_FALL_SPEED 13
 //struct
 typedef struct tble1{
 	int x;
@@ -51,6 +59,7 @@ typedef struct tble3{
 	int handle;
 	int turnflag;
 	COORD2 crd;
+	COORD2 crd_s;
 	SPEED speed;
 	int cnt;
 	int HP;
@@ -68,8 +77,9 @@ typedef struct tble5{
 	int type;
 	int handle;
 	int turnflag;
+	int damage;
+	int size;
 	COORD2 crd;
-	COORD2 size;
 	SPEED speed;
 	SPEED accel;
 	int freq;
@@ -98,7 +108,7 @@ void print_double(double );
 //list.cpp
 void add_bullet(BULLET *);
 void delete_bullet(BULLET *);
-void action_bullet(BULLET *);
+void action_bullet(BULLET *,FLOOR *);
 //enemy.cpp
 void input_floor_enemy(FLOOR *,char *,ENEMY *);
 void file_in(ENEMY *,char *);

@@ -3,6 +3,7 @@
 #include "mypath.h"
 #include <stdio.h>
 #include <string.h>
+#include <math.h>
 
 void input_floor_enemy(FLOOR *flr,char *fname,ENEMY *ene){
 	int cnt=-2;
@@ -12,7 +13,8 @@ void input_floor_enemy(FLOOR *flr,char *fname,ENEMY *ene){
 	while(fgets(buf,256,fp) != NULL){
 		cnt++;
 		if(cnt == -1) continue;
-		sscanf_s(buf,"%d,%d,%d,%d",&flr->enemy[cnt].type,&flr->enemy[cnt].crd.x,&flr->enemy[cnt].crd.y,&flr->enemy[cnt].cnt);
+		sscanf_s(buf,"%d,%d,%d,%d",&flr->enemy[cnt].type,&flr->enemy[cnt].crd_s.x,&flr->enemy[cnt].crd_s.y,&flr->enemy[cnt].cnt);
+		flr->enemy[cnt].crd=flr->enemy[cnt].crd_s;
 		flr->enemy[cnt].HP=(ene+flr->enemy[cnt].type)->HP;
 		flr->enemy[cnt].size=(ene+flr->enemy[cnt].type)->size;
 		flr->enemy[cnt].speed=(ene+flr->enemy[cnt].type)->speed;
@@ -62,16 +64,17 @@ void file_in(ENEMY *ene,char *file){
 
 void behaive_enemy(FLOOR *flr,ENEMY *enemy){
 	switch(enemy->type){
-		case 0: enemy->crd.x += enemy->speed.x;
-			enemy->crd.y += enemy->speed.y;
+		case 0: 
+			enemy->cnt++;
+			enemy->crd.y = enemy->crd_s.y + sin(enemy->cnt * ENE0_ROT_SPEED/180 * PI )*ENE0_MOVE_RANGE;
 			break;
 		case 1: 
+			enemy->cnt++;
 			if(enemy->speed.y == 0 && enemy->cnt > 120){
 			       	enemy->speed.y = -1;
 				enemy->cnt =0;
 			}
-			if(enemy->cnt==120) enemy->speed.y = 13;
-			enemy->cnt++;
+			if(enemy->cnt==120) enemy->speed.y = ENE1_FALL_SPEED;
 			check_contact(&enemy->crd,&enemy->speed,flr,&enemy->size);
 			enemy->crd.x += enemy->speed.x;
 			enemy->crd.y += enemy->speed.y;
