@@ -24,18 +24,21 @@
 #define BULLET0_ACCEL_X 0
 #define BULLET0_ACCEL_Y 0
 #define BULLET0_ACCEL_FREQUENCY 1
-#define BULLET0_DAMAGE 2
+#define BULLET0_DAMAGE 6
 #define BULLET0_SIZE 10
 #define BULLET1_SPEED_X 7
 #define BULLET1_SPEED_Y -10
 #define BULLET1_ACCEL_X 0
 #define BULLET1_ACCEL_Y 1
 #define BULLET1_ACCEL_FREQUENCY 2
-#define BULLET1_DAMAGE 3
+#define BULLET1_DAMAGE 10
 #define BULLET1_SIZE 15
 
  //JUMP
 #define JUMP_NUM 1
+#define JUMP_G 8
+#define JUMP1HIGH -50
+#define JUMP2HIGH -50
 
   //enemy
 #define ENEMY_MAX 10
@@ -68,6 +71,7 @@ typedef struct tble3{
 
 typedef struct tble4{
 	int handle;
+	int toge;
 	int block[ BLOCK_NUM_W ][ BLOCK_NUM_H ];
 	int enemy_num;
 	ENEMY enemy[ENEMY_MAX];

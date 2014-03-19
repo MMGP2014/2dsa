@@ -19,6 +19,7 @@ int first_stg(void){
 	char flr_enemy_name[1000];
 	char tmp_char[1000];
 	char stage[]="STAGE1";
+	char chitoge[]="toge1.png";
 	ENEMY ene[100];
 	char enetype_file[]=DATA "ENEMY\\enemy_type.csv";
 	char main_name[]=PIC MAIN_PIC;
@@ -56,7 +57,10 @@ int first_stg(void){
 	/*ClearDrawScreen();
 	print_char(enetype_file);
 	ScreenFlip();*/
-
+	
+	
+	
+	
 	for(i=0;i<FLOOR_NUM;i++){
 		for(j=0;j<FLOOR_NUM;j++){
 			if(((i == 10) && (j == 10)) ||((i == 11) && (j == 10))){
@@ -64,6 +68,7 @@ int first_stg(void){
 				sprintf_s(flr_name,"%s%s\\floor_%d_%d",DATA,stage,i,j);
 				sprintf_s(tmp_char,"%s.png",flr_name);
 				floor[i][j].handle = LoadGraph(tmp_char);
+				floor[i][j].toge = LoadGraph(PIC "chitoge");
 				sprintf_s(tmp_char,"%s.csv",flr_name);
 				input_floor_csv(&floor[i][j],tmp_char);
 			}
@@ -94,6 +99,8 @@ int first_stg(void){
 			flr_crd_mv.y = 0;
 
 			flr = &floor[flr_crd.x][flr_crd.y];
+		DrawGraph(0,0,flr->handle,0);DrawGraph(0,0,flr->toge,0);
+		DrawString(540,0,"END:[ENTER]",cr);
 			sprintf_s(flr_enemy_name,"%s%s\\enemy_%d_%d.csv",DATA,stage,flr_crd.x,flr_crd.y);
 			input_floor_enemy(flr,flr_enemy_name,ene);
 		}
@@ -151,21 +158,21 @@ int get_key_action(SPEED *speed,int *turnflag,FLOOR floor,COORD2 crd,BULLET *bul
        	}
 
 	//ã‰º‚ÌƒL[“ü—Í
-	if(speed->y < 5) speed->y+=5;
+	if(speed->y < JUMP_G) speed->y+=JUMP_G;
 
 	/*while(ProcessMessage() == 0&&jump_before(crd,floor,size)==0&&key[KEY_INPUT_UP] == 1 && jmp_times==1){
 		print_int(jmp_times);
 		speed ->y = -30;
 	}*/	
 	if(key[KEY_INPUT_DOWN] >= 1){
-		speed->y += 3;
+		speed->y += 1;
 		
 	}else if((key[KEY_INPUT_UP] >=1 || key[KEY_INPUT_SPACE] == 1)&& jump_before(crd,floor,size)==1){
-		speed ->y=-35;
+		speed ->y=JUMP1HIGH;
 		
 	}		
 	if(jump_before(crd,floor,size)==0&&(key[KEY_INPUT_UP]==1 || key[KEY_INPUT_SPACE] >= 1) && jmp_times<=0&&jump_flag[0]==0){
-		speed->y = -35;
+		speed->y = JUMP2HIGH;
 		jmp_times++;
 	}if((key[KEY_INPUT_UP]==1 || key[KEY_INPUT_SPACE] >= 1)){
 		jump_flag[0]=1;
@@ -266,6 +273,13 @@ COORD2 check_contact(COORD2 *crd,SPEED *speed,FLOOR *floor,COORD2 *size){
 
 	block_pyd = (crd->y + (size->y / 2)  - 1) / BLOCK_SIZE;
 	block_pyu = (crd->y - (size->y / 2)) / BLOCK_SIZE;
+	
+	
+	if(floor->block[block_pyd][block_pyu] == 2){
+	  LoadGraphScreen( 0 , 0 , PIC "man.png" , TRUE ) ;
+	}
+	
+	
 	while(speed->x > 0){
 		block_pxr = (crd->x + (size->x / 2) + speed->x - 1) / BLOCK_SIZE;
 		if(block_pxr >= BLOCK_NUM_W){
