@@ -67,6 +67,7 @@ void behaive_enemy(FLOOR *flr,ENEMY *enemy){
 		case 0: 
 			enemy->cnt++;
 			enemy->crd.y = enemy->crd_s.y + sin(enemy->cnt * ENE0_ROT_SPEED/180 * PI )*ENE0_MOVE_RANGE;
+			if(enemy->cnt == 360) enemy->cnt=0;
 			break;
 		case 1: 
 			enemy->cnt++;
@@ -82,6 +83,7 @@ void behaive_enemy(FLOOR *flr,ENEMY *enemy){
 		case 2: 
 			enemy->speed.y += 1;
 			check_contact(&enemy->crd,&enemy->speed,flr,&enemy->size);
+			if(enemy->crd.x > 700 || enemy->crd.x < -100 || enemy->crd.y < -100 || enemy->crd.y > 600) enemy->HP =0;
 			enemy->crd.x += enemy->speed.x;
 			enemy->crd.y += enemy->speed.y;
 			break;

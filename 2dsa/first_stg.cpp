@@ -111,6 +111,7 @@ int first_stg(void){
 		crd.y +=  speed.y;
 		crd.x +=  speed.x;//main move
 		for(i=0;i<flr->enemy_num;i++){ 
+			if(flr->enemy[i].HP <= 0) continue;
 			behaive_enemy(flr,&flr->enemy[i]); //ene move
 		}
 		action_bullet(&bullet_first,flr); //bullet move (ene - bullet contact)
