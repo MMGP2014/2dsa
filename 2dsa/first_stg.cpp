@@ -14,6 +14,7 @@ int first_stg(void){
 	int col1=GetColor(0,255,0);
 	int jmp_times =0;
 	FLOOR floor[ FLOOR_NUM ][ FLOOR_NUM ];
+	FLOOR *flr;
 	char flr_name[1000];
 	char flr_enemy_name[1000];
 	char tmp_char[1000];
@@ -35,6 +36,7 @@ int first_stg(void){
 	bullet_last.pre = &bullet_first;
 	int bullet_flag[BULLET_NUM];
 	int jump_flag[JUMP_NUM];
+	int death;
 	char music_name[]=MUSIC "boss_music.mp3";
 	PlaySoundFile(music_name,DX_PLAYTYPE_LOOP);
 	for(i=0;i < BULLET_NUM; i++){
@@ -43,8 +45,8 @@ int first_stg(void){
 	SPEED speed={0,0};
 	COORD2 size={BLOCK_SIZE,BLOCK_SIZE};
 	COORD2 crd={100,100};
-	COORD2 flr_crd_pre={0,0};
-	COORD2 flr_crd={10,10};//初期フロア10,10
+	COORD2 flr_crd_mv={10,10};
+	COORD2 flr_crd={0,0};//初期フロア10,10
 	for(a=0;a<JUMP_NUM;a++){
 		jump_flag[a] = 0;
 	}
@@ -57,7 +59,7 @@ int first_stg(void){
 
 	for(i=0;i<FLOOR_NUM;i++){
 		for(j=0;j<FLOOR_NUM;j++){
-			if((i == 10) && (j == 10)){
+			if(((i == 10) && (j == 10)) ||((i == 11) && (j == 10))){
 				sprintf_s(flr_name,"%s%s\\floor_%d_%d",DATA,stage,i,j);
 				sprintf_s(flr_name,"%s%s\\floor_%d_%d",DATA,stage,i,j);
 				sprintf_s(tmp_char,"%s.png",flr_name);
@@ -67,41 +69,63 @@ int first_stg(void){
 			}
 		}
 	}
-
+	death=0;
 	while( ProcessMessage() == 0){
 		ScreenFlip();
 		ClearDrawScreen();
+		if(flr_crd_mv.x != 0 || flr_crd_mv.y != 0){
+			flr_crd.x += flr_crd_mv.x;
+			flr_crd.y += flr_crd_mv.y;
+			if( flr_crd_mv.x < 0){
+				crd.x = SCREEN_WIDTH - size.x/2-1;
+				//-1は適当まじめにやらないと切り替え後
+				//2マス目が壁のときバグる恐れ
+			}else if(flr_crd_mv.x > 0){
+				crd.x = size.x/2+1;
+			}
+			if( flr_crd_mv.y < 0){
+				crd.y = SCREEN_HIGHT - size.y/2-1;
+			}else if(flr_crd_mv.y > 0){
+				crd.y = size.y/2+1;
+			}
 
-		DrawGraph(0,0,floor[flr_crd.x][flr_crd.y].handle,0);
-		DrawString(540,0,"END:[ENTER]",cr);
-		if(flr_crd.x != flr_crd_pre.x || flr_crd.y != flr_crd_pre.y){
-			flr_crd_pre.x = flr_crd.x;
-			flr_crd_pre.y = flr_crd.y;
+			//bulletのデリートが必要
+			flr_crd_mv.x = 0;
+			flr_crd_mv.y = 0;
+
+			flr = &floor[flr_crd.x][flr_crd.y];
 			sprintf_s(flr_enemy_name,"%s%s\\enemy_%d_%d.csv",DATA,stage,flr_crd.x,flr_crd.y);
-			input_floor_enemy(&floor[flr_crd.x][flr_crd.y],flr_enemy_name,ene);
+			input_floor_enemy(flr,flr_enemy_name,ene);
 		}
-		if(get_key_action(&speed,&turnflag,floor[flr_crd.x][flr_crd.y],crd,&bullet_last,bullet_handle,bullet_flag,jump_flag,jmp_times,&size)==1) break;
-		check_contact(&crd,&speed,&floor[flr_crd.x][flr_crd.y],&size);
-		move_obj(main_handle,&crd,&speed,turnflag);
-		for(i=0;i<floor[flr_crd.x][flr_crd.y].enemy_num;i++){
-			behaive_enemy(&floor[flr_crd.x][flr_crd.y],&floor[flr_crd.x][flr_crd.y].enemy[i]);
+		DrawGraph(0,0,flr->handle,0);
+		DrawString(540,0,"END:[ENTER]",cr);
+		if(get_key_action(&speed,&turnflag,*flr,crd,&bullet_last,bullet_handle,bullet_flag,jump_flag,jmp_times,&size)==1) break; 
+		flr_crd_mv=check_contact(&crd,&speed,flr,&size); //main - wall contact
+		crd.y +=  speed.y;
+		crd.x +=  speed.x;//main move
+		for(i=0;i<flr->enemy_num;i++){ 
+			behaive_enemy(flr,&flr->enemy[i]); //ene move
 		}
-		action_bullet(&bullet_first,&floor[flr_crd.x][flr_crd.y]);
-		for(i=0;i<floor[flr_crd.x][flr_crd.y].enemy_num;i++){
-			if(floor[flr_crd.x][flr_crd.y].enemy[i].HP <= 0) continue;
-			DrawRotaGraph(floor[flr_crd.x][flr_crd.y].enemy[i].crd.x,floor[flr_crd.x][flr_crd.y].enemy[i].crd.y,1.0,0.0,floor[flr_crd.x][flr_crd.y].enemy[i].handle,0,0);	
+		action_bullet(&bullet_first,flr); //bullet move (ene - bullet contact)
+		for(i=0;i<flr->enemy_num;i++){
+			if(flr->enemy[i].HP <= 0) continue;
+			DrawRotaGraph(flr->enemy[i].crd.x,flr->enemy[i].crd.y,1.0,0.0,flr->enemy[i].handle,0,0);	
+			if((abs(flr->enemy[i].crd.x - crd.x) <= flr->enemy[i].size.x/2 + size.x/2) && (abs(flr->enemy[i].crd.y - crd.y) <= flr->enemy[i].size.y/2 + size.y/2 )){
+				death=1;
+			}
+
 		}
+		DrawRotaGraph(crd.x,crd.y,EXTRATE,0.0,main_handle,1,turnflag);
+		if(death == 1){
+			print_char("death");
+			ScreenFlip();
+			WaitKey();
+		       	return 1;
+		}
+
 	}
 	return 0;
 }
-
-void move_obj(int handle,COORD2 *crd,SPEED *speed,int turnflag){
-	crd->y +=  speed->y;
-	crd->x +=  speed->x;
-
-	DrawRotaGraph(crd->x,crd->y,EXTRATE,0.0,handle,1,turnflag);
-}
-
 
 int get_key_action(SPEED *speed,int *turnflag,FLOOR floor,COORD2 crd,BULLET *bullet_last,int bullet_handle[],int *bullet_flag,int *jump_flag,int &jmp_times,COORD2 *size){
 	/************************************************* 
@@ -213,7 +237,7 @@ int get_key_action(SPEED *speed,int *turnflag,FLOOR floor,COORD2 crd,BULLET *bul
 			bullet_last->pre->freq_cnt = 0;
 			bullet_flag[1]++;
 		}
-	}else bullet_flag[1]=0;
+	}else bullet_flag[1] = 0;
 	return 0;
 }
 
@@ -231,17 +255,24 @@ void input_floor_csv(FLOOR *floor,char *fname){
 	fclose(fp);
 }
 
-void check_contact(COORD2 *crd,SPEED *speed,FLOOR *floor,COORD2 *size){
+COORD2 check_contact(COORD2 *crd,SPEED *speed,FLOOR *floor,COORD2 *size){
 	int block_pxl;
 	int block_pxr;
 	int block_pyu;
 	int block_pyd;
 
 	int i,flag;
+	COORD2 flr_p={0,0};
+
 	block_pyd = (crd->y + (size->y / 2)  - 1) / BLOCK_SIZE;
 	block_pyu = (crd->y - (size->y / 2)) / BLOCK_SIZE;
 	while(speed->x > 0){
 		block_pxr = (crd->x + (size->x / 2) + speed->x - 1) / BLOCK_SIZE;
+		if(block_pxr >= BLOCK_NUM_W){
+			flr_p.x=1;
+			flr_p.y=0;
+			break;
+		}
 		flag=0;
 		for(i = block_pyu; i <= block_pyd ;i++){
 			if(floor->block[block_pxr][i] == 1) flag=1;
@@ -251,6 +282,11 @@ void check_contact(COORD2 *crd,SPEED *speed,FLOOR *floor,COORD2 *size){
 	}
 	while(speed->x < 0){
 		block_pxl = (crd->x - (size->x / 2) + speed->x ) / BLOCK_SIZE;
+		if(block_pxl < 0){
+			flr_p.x=-1;
+			flr_p.y=0;
+			break;
+		}
 		flag=0;
 		for(i = block_pyu; i <= block_pyd ;i++){
 			if(floor->block[block_pxl][i] == 1) flag=1;
@@ -263,6 +299,11 @@ void check_contact(COORD2 *crd,SPEED *speed,FLOOR *floor,COORD2 *size){
 	block_pxl = (crd->x - (size->x / 2) + speed->x ) / BLOCK_SIZE;
 	while(speed->y > 0){
 		block_pyd = (crd->y + (size->y / 2) + speed->y - 1 ) / BLOCK_SIZE;
+		if(block_pyd >= BLOCK_NUM_H){
+			flr_p.x=0;
+			flr_p.y=1;
+			break;
+		}
 		flag=0;
 		for(i = block_pxl; i <= block_pxr ;i++){
 			if(floor->block[i][block_pyd] == 1) flag=1;
@@ -272,6 +313,11 @@ void check_contact(COORD2 *crd,SPEED *speed,FLOOR *floor,COORD2 *size){
 	}
 	while(speed->y < 0){
 		block_pyu = (crd->y - (size->y / 2) + speed->y ) / BLOCK_SIZE;
+		if(block_pyu < 0){
+			flr_p.x=0;
+			flr_p.y=-1;
+			break;
+		}
 		flag=0;
 		for(i = block_pxl; i <= block_pxr ;i++){
 			if(floor->block[i][block_pyu] == 1) flag=1;
@@ -279,6 +325,7 @@ void check_contact(COORD2 *crd,SPEED *speed,FLOOR *floor,COORD2 *size){
 		if(flag == 0) break;
 		speed->y++;
 	}
+	return flr_p;
 }
 
 

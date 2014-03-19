@@ -92,10 +92,9 @@ typedef struct tble5{
 //prot
 //first_stg.cpp
 
-void move_obj(int ,COORD2 *,SPEED *,int );
 void input_floor_csv(FLOOR *,char *);
 
-void check_contact(COORD2 *,SPEED *,FLOOR *,COORD2 *);
+COORD2 check_contact(COORD2 *,SPEED *,FLOOR *,COORD2 *);
 int get_key_action(SPEED *,int *,FLOOR,COORD2,BULLET *,int *,int *,int *,int &,COORD2 *);
 int key2int();
 int first_stg(void);
